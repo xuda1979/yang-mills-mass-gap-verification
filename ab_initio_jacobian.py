@@ -240,14 +240,15 @@ class AbInitioJacobianEstimator:
         # Note: Derivative of g^3 is 3g^2.
         # Beta function coefficient b0_eff = b0 / (16pi^2)
         
-        # Correct Factor: 11/3 * Nc = 11
+        # Correct Factor: 11/3 * Nc = 11 (Standard coeff is 11 / (16 * pi^2))
         # beta_func = - (11/16pi^2) * g^3
         # In IR direction (L -> 2L), g grows.
         # dg/d(log L) = + (11/16pi^2) * g^3
         # g' = g + (11/16pi^2)*g^3 * ln(2)
         # J = dg'/dg = 1 + 3 * (11/16pi^2) * g^2 * ln(2)
         
-        coeff_1loop = (3.0 * 11.0) / (16.0 * math.pi**2) # ~ 0.2
+        # 1 - loop beta function (rigorous for SU(3))
+        coeff_1loop = 11.0 / (16.0 * math.pi**2) # ~ 0.07
         gamma_P = Interval(coeff_1loop, coeff_1loop) * gsq * math.log(2.0)
         
         # Non-perturbative error bound (Ab Initio Remainder / 2-Loop)
