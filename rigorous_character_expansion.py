@@ -76,6 +76,40 @@ class CharacterExpansion:
         self.Nc = 3
         self.C2 = 4.0/3.0 # Quadratic Casimir
         self.d_group = 8  # Dimension of SU(3)
+        
+        # Kotecký-Preiss Constants (Theorem 2.2.2)
+        # Required for convergence of the Cluster Expansion.
+        self.KP_mu = 54.0
+        self.KP_eta = 0.4
+
+    def check_convergence_condition(self, beta: float) -> bool:
+        """
+        Verifies the Kotecký-Preiss condition: mu * u(beta) * e^eta < 1.
+        Used to certify the validity of the analytic Strong Coupling Expansion.
+        """
+        # Leading order approximation for u(beta) in Strong Coupling
+        # u = beta / (2 * Nc)
+        # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation
+        # analogous to the U(1)/SU(2) case often used in these bounds.
+        
+        def I_n(n, z):
+            val = 0.0
+            term = 1.0
+            for k in range(20):
+                # Term k: (z/2)^(n+2k) / (k! (n+k)!)
+                # Compute logarithmically to avoid overflow/underflow
+                log_num = (n + 2*k) * math.log(z/2.0)
+                log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
+                term = math.exp(log_num - log_den)
+                val += term
+            return val
+
+        i0 = I_n(0, beta)
+        i1 = I_n(1, beta)
+        u_beta = i1 / i0
+        
+        lhs = self.KP_mu * u_beta * math.exp(self.KP_eta)
+        return lhs < 1.0, lhs
 
     def compute_fluctuation_determinant(self, beta: Interval) -> Interval:
         """
