@@ -30,7 +30,7 @@ Write-Host ""
 
 # 3. Main CAP Verification (Phase 2)
 Write-Host "[Step 3/4] Running Intermediate Bridge Verification (Phase 2)..." -ForegroundColor Yellow
-Write-Host "Target: Prove Tube Contraction for Beta in [0.63, 6.0]" -ForegroundColor Gray
+Write-Host "Target: Prove Tube Contraction for Beta in [0.40, 6.0]" -ForegroundColor Gray
 python full_verifier_phase2.py
 if ($LASTEXITCODE -ne 0) { throw "Verification Phase 2 failed" }
 Write-Host "Tube Contraction Verified." -ForegroundColor Green

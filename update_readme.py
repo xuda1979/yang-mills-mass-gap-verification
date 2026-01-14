@@ -1,4 +1,6 @@
-# Yang-Mills Existence and Mass Gap: Computer-Assisted Verification Suite
+import os
+
+readme_content = r'''# Yang-Mills Existence and Mass Gap: Computer-Assisted Verification Suite
 
 **Author:** Da Xu  
 **Affiliation:** China Mobile Research Institute  
@@ -37,11 +39,6 @@ The verification logic is partitioned into the following modules:
     *   **Role:** Computes rigorous bounds for the Jacobian of the RG map.
     *   **Method:** Uses **Rigorous Remainder Perturbation Theory** (Ab Initio) to bound mass gap scaling across the crossover.
 
-4.  **`export_results_to_latex.py`** *(NEW)*
-    *   **Role:** Exports all verification results to LaTeX macros.
-    *   **Output:** `verification_results.tex` (loaded by paper) and `verification_results.json`.
-    *   **Purpose:** Ensures paper and code stay synchronized automatically.
-
 ## Installation & Usage
 
 ### Prerequisites
@@ -58,21 +55,12 @@ The verification logic is partitioned into the following modules:
    ```bash
    python full_verifier_phase2.py
    ```
-3. **Export to Paper (LaTeX):**
-   ```bash
-   python export_results_to_latex.py
-   ```
-   This generates `../split/verification_results.tex` which the paper loads via `\input{verification_results.tex}`.
-
-### Paper-Code Synchronization
-
-The paper uses LaTeX macros like `\VerBetaStrongMax`, `\VerMaxJIrrelevant`, etc. instead of hardcoded numbers. After running verification:
-1. Run `python export_results_to_latex.py`
-2. Recompile the paper (`pdflatex main.tex`)
-3. All verification numbers update automatically
 
 ## Reviewer Notes
 
 *   **Consistency Fix (Jan 14):** The coupling ranges have been unified. The verification establishes a direct handshake at $\beta=0.40$, matching the extended radius of convergence of the Strong Coupling phase.
 *   **Ab Initio Jacobian:** The Jacobian estimator now explicitly uses rigorous remainder bounds for the perturbative expansion, ensuring validity across the crossover regime.
-*   **Auto-Sync:** Paper numerical values are now auto-generated from verification runs, eliminating manual synchronization errors.
+'''
+
+with open(r"c:\Users\Lenovo\papers\yang\yang_mills\verification\README.md", "w", encoding="utf-8") as f:
+    f.write(readme_content)

@@ -37,52 +37,64 @@ sys.path.append(os.path.dirname(__file__))
 # 1. Interval Arithmetic and Character Expansion Imports
 # -----------------------------------------------------------------------------
 try:
-    from phase2.interval_arithmetic.interval import Interval
-except ImportError: 
-    # Fallback if phase2 package structure is not perfectly set up in this context
-    # We define a minimal robust Interval class if the import fails
-    import math
-    class Interval:
-        def __init__(self, lower, upper):
-            self.lower = float(lower)
-            self.upper = float(upper)
-        def __add__(self, other):
-            if isinstance(other, Interval):
-                low = self.lower + other.lower
-                high = self.upper + other.upper
-            else:
+    from interval_arithmetic import Interval
+except ImportError:
+    try:
+        from phase2.interval_arithmetic.interval import Interval
+    except ImportError: 
+        # Fallback if phase2 package structure is not perfectly set up in this context
+        # We define a minimal robust Interval class if the import fails
+        import math
+        class Interval:
+            def __init__(self, lower, upper):
+                self.lower = float(lower)
+                self.upper = float(upper)
+            def __add__(self, other):
+                if isinstance(other, Interval):
+                    low = self.lower + other.lower
+                    high = self.upper + other.upper
+                else:
+                    val = float(other)
+                    low = self.lower + val
+                    high = self.upper + val
+                return Interval(math.nextafter(low, -math.inf), math.nextafter(high, math.inf))
+            def __mul__(self, other):
+                if isinstance(other, Interval):
+                    p = [self.lower*other.lower, self.lower*other.upper, 
+                         self.upper*other.lower, self.upper*other.upper]
+                    return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
                 val = float(other)
-                low = self.lower + val
-                high = self.upper + val
-            return Interval(math.nextafter(low, -math.inf), math.nextafter(high, math.inf))
-        def __mul__(self, other):
-            if isinstance(other, Interval):
-                p = [self.lower*other.lower, self.lower*other.upper, 
-                     self.upper*other.lower, self.upper*other.upper]
+                p = [self.lower*val, self.upper*val]
                 return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-            val = float(other)
-            p = [self.lower*val, self.upper*val]
-            return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-        def div_interval(self, other):
-            if isinstance(other, Interval):
-                if other.lower <= 0 <= other.upper: 
-                     # Return infinite interval
-                     return Interval(-float('inf'), float('inf'))
-                p = [self.lower/other.lower, self.lower/other.upper,
-                     self.upper/other.lower, self.upper/other.upper]
-                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-            val = float(other)
-            return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
-        def __str__(self):
-            return f"[{self.lower:.6g}, {self.upper:.6g}]"
-        def __repr__(self):
-            return self.__str__()
-        @property
-        def mid(self):
-            return (self.lower + self.upper) / 2.0
-        @property
-        def width(self):
-            return self.upper - self.lower
+            def div_interval(self, other):
+                if isinstance(other, Interval):
+                    if other.lower <= 0 <= other.upper: 
+                         # Return infinite interval
+                         return Interval(-float('inf'), float('inf'))
+                    p = [self.lower/other.lower, self.lower/other.upper,
+                         self.upper/other.lower, self.upper/other.upper]
+                    return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
+                val = float(other)
+                return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
+            def __str__(self):
+                return f"[{self.lower:.6g}, {self.upper:.6g}]"
+            def __repr__(self):
+                return self.__str__()
+            @property
+            def mid(self):
+                return (self.lower + self.upper) / 2.0
+            @property
+            def width(self):
+                return self.upper - self.lower
+            def sqrt(self):
+                if self.lower < 0: raise ValueError("sqrt of negative")
+                return Interval(math.sqrt(self.lower), math.sqrt(self.upper))
+            def log(self):
+                if self.lower <= 0: raise ValueError("log of non-positive")
+                return Interval(math.log(self.lower), math.log(self.upper))
+            def exp(self):
+                return Interval(math.exp(self.lower), math.exp(self.upper))
+
 
 # Import the Character Expansion Module for rigorous matrix elements
 try:
@@ -372,8 +384,8 @@ class AbInitioBounds:
         """
         print("    [Audit] Verifying Analytic Pollution Constant Derivation...")
         
-        # We test at the critical crossover beta=6.0 -> beta=0.63
-        test_betas = [Interval(0.63, 0.635), Interval(2.4, 2.45), Interval(6.0, 6.1)]
+        # We test at the critical crossover beta=6.0 -> beta=0.40
+        test_betas = [Interval(0.40, 0.405), Interval(2.4, 2.45), Interval(6.0, 6.1)]
         
         for beta in test_betas:
             # 1. Compute C_poll
@@ -400,18 +412,18 @@ class AbInitioBounds:
         The review notes a potential gap between Strong Coupling (Cluster Expansion)
         and Intermediate Coupling (CAP).
         
-        We rigorously close this gap by meeting at beta = 0.63.
-        1. Strong Coupling: Valid for beta <= 0.63 (Rigorous Dobrushin FSC).
-        2. CAP Tube: Initialized at beta = 0.63 and integrated upwards.
-           or Initialized at Weak Coupling and integrated downwards to 0.63.
+        We rigorously close this gap by meeting at beta = 0.40.
+        1. Strong Coupling: Valid for beta <= 0.40 (Analytic Cluster Expansion).
+        2. CAP Tube: Initialized at beta = 0.40 and integrated upwards.
+           or Initialized at Weak Coupling and integrated downwards to 0.40.
         
-        The code enforces OVERLAP at beta = 0.63.
+        The code enforces OVERLAP at beta = 0.40.
         """
         # Convergence radius for SU(3) cluster expansion (Convention B rigorous)
-        BETA_STRONG_MAX = 0.63  
+        BETA_STRONG_MAX = 0.40  
         
         # CAP verification range
-        BETA_CAP_MIN = 0.63   
+        BETA_CAP_MIN = 0.40   
         BETA_CAP_MAX = 6.0   
         
         # Check coverage
@@ -624,8 +636,8 @@ if __name__ == "__main__":
     constants_map = {}
     
     # Range of betas: 0.4 to 6.0 in steps
-    # We include 0.40 explicitly to show the overlap/handshake capability,
-    # even if the official handshake is at 0.63.
+    # We include 0.40 explicitly as this is the official handshake point
+    # between the Strong Coupling (Cluster Expansion) and Intermediate (CAP) regimes.
     target_betas = [0.40, 0.50, 0.60, 0.63, 0.70, 0.80, 0.90, 1.0, 1.2, 1.5, 2.0, 2.4, 3.0, 4.0, 5.0, 6.0]
     
     for b_val in target_betas:

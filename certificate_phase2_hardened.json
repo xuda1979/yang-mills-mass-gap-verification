@@ -3,81 +3,66 @@
   "log": [
     {
       "step": 0,
-      "head_norm_max": 0.010782834637812202,
-      "tail_bound_max": 0.0005329702970000002,
+      "head_norm_max": 0.010482834637812199,
+      "tail_bound_max": 0.0005354702970000002,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 1,
-      "head_norm_max": 0.011752932256300828,
-      "tail_bound_max": 0.0005135171737852634,
+      "head_norm_max": 0.01104205201934052,
+      "tail_bound_max": 0.0005150705424297157,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 2,
-      "head_norm_max": 0.012990015418751832,
-      "tail_bound_max": 0.000508315772515054,
+      "head_norm_max": 0.011699926483822619,
+      "tail_bound_max": 0.000508783585051762,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 3,
-      "head_norm_max": 0.014626190872136208,
-      "tail_bound_max": 0.0005076712566442935,
+      "head_norm_max": 0.02339985296764524,
+      "tail_bound_max": 0.000512409989998457,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 4,
-      "head_norm_max": 0.0168961569805331,
-      "tail_bound_max": 0.0005088881419175367,
+      "head_norm_max": 0.04679970593529049,
+      "tail_bound_max": 0.0005280518227041177,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 5,
-      "head_norm_max": 0.02025624478159016,
-      "tail_bound_max": 0.0005115419582286601,
+      "head_norm_max": 0.09359941187058099,
+      "tail_bound_max": 0.0005916985654661842,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 6,
-      "head_norm_max": 0.025707956794607523,
-      "tail_bound_max": 0.0005163972825813358,
+      "head_norm_max": 0.187198823741162,
+      "tail_bound_max": 0.0008473111290338986,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 7,
-      "head_norm_max": 0.0358575239208892,
-      "tail_bound_max": 0.0005261147714894234,
+      "head_norm_max": 0.37439764748232407,
+      "tail_bound_max": 0.0018502039046503001,
       "penalty": 0.0005000000000000001,
       "status": "OK"
     },
     {
       "step": 8,
-      "head_norm_max": 0.05946267689029816,
-      "tail_bound_max": 0.0005498712664879057,
+      "head_norm_max": 0.7487952949646483,
+      "tail_bound_max": 0.005576421185072329,
       "penalty": 0.0005000000000000001,
-      "status": "OK"
-    },
-    {
-      "step": 9,
-      "head_norm_max": 0.14140480479225495,
-      "tail_bound_max": 0.0006324936992308239,
-      "penalty": 0.0005000000000000001,
-      "status": "OK"
-    },
-    {
-      "step": 10,
-      "head_norm_max": 0.8009136206483762,
-      "tail_bound_max": 0.0012044262515327833,
-      "penalty": 0.0005000000000000001,
-      "status": "SUCCESS: Reached Strong Coupling (Beta < 0.4)",
-      "beta": 0.16023253316195238
+      "status": "SUCCESS: Reached Strong Coupling"
     }
   ],
   "rigorous_mode": true

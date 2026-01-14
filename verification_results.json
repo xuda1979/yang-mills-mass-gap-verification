@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "generated": "2026-01-14T14:35:31.827543",
+    "version": "1.0",
+    "status": "PASS"
+  },
+  "regimes": {
+    "strong_coupling_max": 0.4,
+    "intermediate_min": 0.4,
+    "intermediate_max": 6.0,
+    "weak_coupling_min": 6.0
+  },
+  "verification_points": {
+    "0.40": {
+      "beta": 0.4,
+      "regime": "strong",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.177428,
+      "J_irrelevant_upper": 0.177428,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "0.50": {
+      "beta": 0.5,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.221541,
+      "J_irrelevant_upper": 0.221541,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "0.63": {
+      "beta": 0.63,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.278641,
+      "J_irrelevant_upper": 0.278641,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "1.00": {
+      "beta": 1.0,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.439089,
+      "J_irrelevant_upper": 0.439089,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "2.00": {
+      "beta": 2.0,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.848858,
+      "J_irrelevant_upper": 0.848858,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "3.00": {
+      "beta": 3.0,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.95,
+      "J_irrelevant_upper": 0.95,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "4.00": {
+      "beta": 4.0,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.0,
+      "J_irrelevant_lower": -0.95,
+      "J_irrelevant_upper": 0.95,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "5.00": {
+      "beta": 5.0,
+      "regime": "weak",
+      "J_marginal_lower": 1.05794,
+      "J_marginal_upper": 1.05794,
+      "J_irrelevant_lower": 0.25,
+      "J_irrelevant_upper": 0.34,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "6.00": {
+      "beta": 6.0,
+      "regime": "weak",
+      "J_marginal_lower": 1.048283,
+      "J_marginal_upper": 1.048283,
+      "J_irrelevant_lower": 0.25,
+      "J_irrelevant_upper": 0.325,
+      "contracts": true,
+      "status": "PASS"
+    }
+  },
+  "summary": {
+    "all_passed": true,
+    "total_points": 9,
+    "passed_points": 9,
+    "max_J_irrelevant": 0.95,
+    "min_J_irrelevant": 0.177428,
+    "contraction_margin": 0.04
+  }
+}

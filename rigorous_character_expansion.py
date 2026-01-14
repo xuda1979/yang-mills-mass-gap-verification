@@ -19,22 +19,25 @@ from typing import Dict, List, Tuple, Optional
 
 # Import the existing Interval class
 try:
-    from phase2.interval_arithmetic.interval import Interval
+    from interval_arithmetic import Interval
 except ImportError:
-    # Use the fallback defined in rigorous_constants_derivation or redefine here
-    class Interval:
-        def __init__(self, lower, upper):
-            self.lower = float(lower)
-            self.upper = float(upper)
-        def __add__(self, other):
-            if isinstance(other, Interval):
-                lo = self.lower + other.lower
-                hi = self.upper + other.upper
-            else:
-                val = float(other)
-                lo = self.lower + val
-                hi = self.upper + val
-            return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
+    try:
+        from phase2.interval_arithmetic.interval import Interval
+    except ImportError:
+        # Use the fallback defined in rigorous_constants_derivation or redefine here
+        class Interval:
+            def __init__(self, lower, upper):
+                self.lower = float(lower)
+                self.upper = float(upper)
+            def __add__(self, other):
+                if isinstance(other, Interval):
+                    lo = self.lower + other.lower
+                    hi = self.upper + other.upper
+                else:
+                    val = float(other)
+                    lo = self.lower + val
+                    hi = self.upper + val
+                return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
         def __sub__(self, other):
              if isinstance(other, Interval):
                 lo = self.lower - other.upper

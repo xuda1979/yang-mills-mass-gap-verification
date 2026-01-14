@@ -15,13 +15,45 @@ class Interval:
     def __init__(self, lower, upper):
         self.lower = float(lower)
         self.upper = float(upper)
-        # Verify strict ordering or fix small epsilon errors
+        # Verify strict ordering
         if self.lower > self.upper:
-            if self.lower - self.upper < 1e-14:
+            # Check for very small floating point noise which is common in iterative calculations
+            if self.lower - self.upper < 1e-15:
+                # Slightly widen to resolve
                 self.upper = self.lower
             else:
-                # In a rigorous setting, this is a fatal error
                 raise ValueError(f"Invalid Interval Const: [{lower}, {upper}]")
+
+    @classmethod
+    def from_value(cls, value):
+        v = float(value)
+        return cls(v, v)
+        
+    def __repr__(self):
+        return f"[{self.lower:.6g}, {self.upper:.6g}]"
+
+    def sqrt(self):
+        if self.lower < 0:
+            raise ValueError("sqrt of negative interval")
+        return Interval(
+            math.nextafter(math.sqrt(self.lower), -float('inf')),
+            math.nextafter(math.sqrt(self.upper), float('inf'))
+        )
+
+    def log(self):
+        if self.lower <= 0:
+            raise ValueError("log of non-positive interval")
+        return Interval(
+            math.nextafter(math.log(self.lower), -float('inf')),
+            math.nextafter(math.log(self.upper), float('inf'))
+        )
+
+    def exp(self):
+        return Interval(
+            math.nextafter(math.exp(self.lower), -float('inf')),
+            math.nextafter(math.exp(self.upper), float('inf'))
+        )
+
 
     def __add__(self, other):
         if isinstance(other, Interval):
