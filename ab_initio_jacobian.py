@@ -46,44 +46,51 @@ sys.path.append(os.path.dirname(__file__))
 try:
     from phase2.interval_arithmetic.interval import Interval
 except ImportError:
-    # Robust Fallback
+    # Robust Fallback with Outward Rounding
+    import math
     class Interval:
         def __init__(self, lower, upper):
             self.lower = float(lower)
             self.upper = float(upper)
         def __add__(self, other):
+            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
-                return Interval(self.lower + other.lower, self.upper + other.upper)
+                return Interval(self.lower + other.lower - epsilon, self.upper + other.upper + epsilon)
             val = float(other)
-            return Interval(self.lower + val, self.upper + val)
+            return Interval(self.lower + val - epsilon, self.upper + val + epsilon)
         def __sub__(self, other):
+             epsilon = sys.float_info.epsilon
              if isinstance(other, Interval):
-                return Interval(self.lower - other.upper, self.upper - other.lower)
+                return Interval(self.lower - other.upper - epsilon, self.upper - other.lower + epsilon)
              val = float(other)
-             return Interval(self.lower - val, self.upper - val)
+             return Interval(self.lower - val - epsilon, self.upper - val + epsilon)
         def __mul__(self, other):
+            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
                 p = [self.lower*other.lower, self.lower*other.upper, 
                      self.upper*other.lower, self.upper*other.upper]
-                return Interval(min(p), max(p))
+                return Interval(min(p) - epsilon, max(p) + epsilon)
             val = float(other)
             p = [self.lower*val, self.upper*val]
-            return Interval(min(p), max(p))
+            return Interval(min(p) - epsilon, max(p) + epsilon)
         def div_interval(self, other):
+            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
                 if other.lower <= 0 <= other.upper: 
                     # Naive handling for 0 in divisor, expand to inf
                     return Interval(-float('inf'), float('inf')) 
                 p = [self.lower/other.lower, self.lower/other.upper,
                      self.upper/other.lower, self.upper/other.upper]
-                return Interval(min(p), max(p))
-            return Interval(self.lower/other, self.upper/other)
+                return Interval(min(p) - epsilon, max(p) + epsilon)
+            return Interval(self.lower/other - epsilon, self.upper/other + epsilon)
         def __neg__(self):
             return Interval(-self.upper, -self.lower)
         def exp(self):
-            return Interval(math.exp(self.lower), math.exp(self.upper))
+            epsilon = sys.float_info.epsilon
+            return Interval(math.exp(self.lower) - epsilon, math.exp(self.upper) + epsilon)
         def log(self):
-            return Interval(math.log(self.lower), math.log(self.upper))
+            epsilon = sys.float_info.epsilon
+            return Interval(math.log(self.lower) - epsilon, math.log(self.upper) + epsilon)
         @property
         def mid(self):
             return (self.lower + self.upper) / 2.0

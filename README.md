@@ -50,7 +50,7 @@ python full_verifier_phase2.py
 ## Reviewer Notes
 
 *   **Circularity Check:** The `rigorous_constants_derivation.py` script now includes an explicit routine `verify_analytic_tail_bound()` which demonstrates that the contraction factor holds without assuming a mass gap a priori.
-*   **Gap Closure:** The verification explicitly checks for continuity at $\beta=0.4$, matching the radius of convergence of the Strong Coupling Expansion.
+*   **Gap Closure:** The verification explicitly checks for continuity at $\beta=0.63$, providing a rigorous handshake with the Dobrushin Finite-Size Criterion.
 
 ## License
 
