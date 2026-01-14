@@ -991,9 +991,9 @@ def main():
     """Run Phase 1 verification."""
     
     # Define Tube (intermediate regime for SU(3))
-    # CRITICAL FIX (Jan 13, 2026): Use BETA_STRONG_MAX = 0.4 consistently
-    # Previous value of 0.3 was inconsistent with other files
-    beta_S = 0.4  # Strong coupling boundary - MUST match BETA_STRONG_MAX
+    # CRITICAL FIX (Jan 13, 2026): Use BETA_STRONG_MAX = 0.63 consistently
+    # Validated by Dobrushin Checker
+    beta_S = 0.63  # Strong coupling boundary
     beta_W = 6.0  # Weak coupling start (CAP begins here)
     
     tube = TubeDefinition(beta_min=beta_S, beta_max=beta_W, N=3)

@@ -25,11 +25,20 @@ class Interval:
 
     def __add__(self, other):
         if isinstance(other, Interval):
-            eps = np.finfo(float).eps
-            return Interval(self.lower + other.lower - eps, self.upper + other.upper + eps)
+            # Outward rounding using nextafter for rigor
+            new_lower = float(self.lower + other.lower)
+            new_upper = float(self.upper + other.upper)
+            return Interval(
+                np.nextafter(new_lower, -np.inf), 
+                np.nextafter(new_upper, np.inf)
+            )
         elif isinstance(other, (int, float)):
-            eps = np.finfo(float).eps
-            return Interval(self.lower + other - eps, self.upper + other + eps)
+            new_lower = float(self.lower + other)
+            new_upper = float(self.upper + other)
+            return Interval(
+                np.nextafter(new_lower, -np.inf), 
+                np.nextafter(new_upper, np.inf)
+            )
         return NotImplemented
 
     def __radd__(self, other):
@@ -37,11 +46,19 @@ class Interval:
 
     def __sub__(self, other):
         if isinstance(other, Interval):
-            eps = np.finfo(float).eps
-            return Interval(self.lower - other.upper - eps, self.upper - other.lower + eps)
+            new_lower = float(self.lower - other.upper)
+            new_upper = float(self.upper - other.lower)
+            return Interval(
+                np.nextafter(new_lower, -np.inf),
+                np.nextafter(new_upper, np.inf)
+            )
         elif isinstance(other, (int, float)):
-            eps = np.finfo(float).eps
-            return Interval(self.lower - other - eps, self.upper - other + eps)
+            new_lower = float(self.lower - other)
+            new_upper = float(self.upper - other)
+            return Interval(
+                np.nextafter(new_lower, -np.inf),
+                np.nextafter(new_upper, np.inf)
+            )
         return NotImplemented
 
     def __rsub__(self, other):
@@ -58,12 +75,17 @@ class Interval:
                 self.upper * other.lower,
                 self.upper * other.upper
             ]
-            eps = np.finfo(float).eps
-            return Interval(min(products) - eps, max(products) + eps)
+            return Interval(
+                np.nextafter(float(min(products)), -np.inf), 
+                np.nextafter(float(max(products)), np.inf)
+            )
         elif isinstance(other, (int, float)):
-            products = [self.lower * other, self.upper * other]
-            eps = np.finfo(float).eps
-            return Interval(min(products) - eps, max(products) + eps)
+            val = float(other)
+            products = [self.lower * val, self.upper * val]
+            return Interval(
+                np.nextafter(float(min(products)), -np.inf), 
+                np.nextafter(float(max(products)), np.inf)
+            )
         return NotImplemented
 
     def __rmul__(self, other):

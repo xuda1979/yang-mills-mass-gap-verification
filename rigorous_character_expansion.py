@@ -28,27 +28,39 @@ except ImportError:
             self.upper = float(upper)
         def __add__(self, other):
             if isinstance(other, Interval):
-                return Interval(self.lower + other.lower, self.upper + other.upper)
-            return Interval(self.lower + other, self.upper + other)
+                lo = self.lower + other.lower
+                hi = self.upper + other.upper
+            else:
+                val = float(other)
+                lo = self.lower + val
+                hi = self.upper + val
+            return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
         def __sub__(self, other):
              if isinstance(other, Interval):
-                return Interval(self.lower - other.upper, self.upper - other.lower)
-             return Interval(self.lower - other, self.upper - other)
+                lo = self.lower - other.upper
+                hi = self.upper - other.lower
+             else:
+                val = float(other)
+                lo = self.lower - val
+                hi = self.upper - val
+             return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
         def __mul__(self, other):
             if isinstance(other, Interval):
                 p = [self.lower*other.lower, self.lower*other.upper, 
                      self.upper*other.lower, self.upper*other.upper]
-                return Interval(min(p), max(p))
+                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
             val = float(other)
             p = [self.lower*val, self.upper*val]
-            return Interval(min(p), max(p))
+            return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
         def div_interval(self, other):
             if isinstance(other, Interval):
-                if other.lower <= 0 <= other.upper: raise ValueError("Division by zero interval")
+                if other.lower <= 0 <= other.upper: 
+                     return Interval(-float('inf'), float('inf'))
                 p = [self.lower/other.lower, self.lower/other.upper,
                      self.upper/other.lower, self.upper/other.upper]
-                return Interval(min(p), max(p))
-            return Interval(self.lower/other, self.upper/other)
+                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
+            val = float(other)
+            return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
         def __str__(self):
             return f"[{self.lower:.6g}, {self.upper:.6g}]"
         def __repr__(self):

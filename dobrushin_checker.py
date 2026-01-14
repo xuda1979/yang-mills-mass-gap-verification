@@ -186,3 +186,9 @@ if __name__ == "__main__":
     checker = DobrushinChecker()
     # Check the "Void" range
     checker.check_finite_size_criterion([0.01, 0.02, 0.1, 0.2, 0.3, 0.4, 0.5])
+    
+    # Testing critical values near the handshake boundary
+    print("Testing additional critical beta values for handshake verification:")
+    print("-" * 65)
+    betas_to_test = [0.60, 0.63, 0.64, 0.65, 0.70]
+    checker.check_finite_size_criterion(betas_to_test)

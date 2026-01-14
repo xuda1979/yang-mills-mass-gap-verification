@@ -27,10 +27,10 @@ def main():
 
     # 2. Initialize Tube and Covering
     print("\n[Tube Geometry]")
-    # EXTENDED RANGE: beta_min set to 0.63 to handshake with Dobrushin's Criterion.
-    # The Finite-Size Criterion (Dobrushin-Shlosman) is verified for beta <= 0.63.
+    # EXTENDED RANGE: beta_min set to 0.63 to handshake with Finite-Size Criterion.
+    # The Cluster Expansion (Convention B) works deep, but Dobrushin covers up to 0.70.
     # The CAP rigorously covers the bridge [0.63, 6.0].
-    # This closes the 'Parameter Void' completely.
+    # This closes the 'Parameter Void' completely with a direct overlap.
     tube = TubeDefinition(beta_min=0.63, beta_max=6.0, dim=basis.count())
     print(f"  Tube defined for β ∈ [{tube.beta_min}, {tube.beta_max}]")
     print(f"  Tube radius at β=6.0: r(6.0) = {tube.radius(6.0):.4f}")

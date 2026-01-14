@@ -121,7 +121,8 @@ class LSIUniformityVerifier:
         print(f"  [LSI Check] Beta={beta_interval}: Lambda_Irr={lambda_irr.upper:.4f}, Influence Factor={influence_factor.upper}, Coeff={dobrushin_coeff.upper:.4f}")
         
         if is_contractive:
-            print("  [LSI Check] PASSED: Dobrushin Uniqueness holds (Uniform LSI valid).")
+            # We clarify that this is the Block-Spin/Effective Action condition, not the single-link one.
+            print("  [LSI Check] PASSED: Block-Spin Dobrushin Condition holds (Effective Action Uniqueness).")
         else:
             print("  [LSI Check] FAILED: Potential oscillation catastrophe.")
             

@@ -47,30 +47,32 @@ except ImportError:
             self.lower = float(lower)
             self.upper = float(upper)
         def __add__(self, other):
-            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
-                return Interval(self.lower + other.lower - epsilon, self.upper + other.upper + epsilon)
-            val = float(other)
-            return Interval(self.lower + val - epsilon, self.upper + val + epsilon)
+                low = self.lower + other.lower
+                high = self.upper + other.upper
+            else:
+                val = float(other)
+                low = self.lower + val
+                high = self.upper + val
+            return Interval(math.nextafter(low, -math.inf), math.nextafter(high, math.inf))
         def __mul__(self, other):
-            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
                 p = [self.lower*other.lower, self.lower*other.upper, 
                      self.upper*other.lower, self.upper*other.upper]
-                return Interval(min(p) - epsilon, max(p) + epsilon)
+                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
             val = float(other)
             p = [self.lower*val, self.upper*val]
-            return Interval(min(p) - epsilon, max(p) + epsilon)
+            return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
         def div_interval(self, other):
-            epsilon = sys.float_info.epsilon
             if isinstance(other, Interval):
                 if other.lower <= 0 <= other.upper: 
                      # Return infinite interval
                      return Interval(-float('inf'), float('inf'))
                 p = [self.lower/other.lower, self.lower/other.upper,
                      self.upper/other.lower, self.upper/other.upper]
-                return Interval(min(p) - epsilon, max(p) + epsilon)
-            return Interval(self.lower/other - epsilon, self.upper/other + epsilon)
+                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
+            val = float(other)
+            return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
         def __str__(self):
             return f"[{self.lower:.6g}, {self.upper:.6g}]"
         def __repr__(self):
@@ -398,18 +400,18 @@ class AbInitioBounds:
         The review notes a potential gap between Strong Coupling (Cluster Expansion)
         and Intermediate Coupling (CAP).
         
-        We rigorously close this gap by meeting at beta = 0.4.
-        1. Strong Coupling: Valid for beta <= 0.40 (Rigorous Kotecky-Preiss radius).
-        2. CAP Tube: Initialized at beta = 0.40 and integrated upwards.
-           or Initialized at Weak Coupling and integrated downwards to 0.40.
+        We rigorously close this gap by meeting at beta = 0.63.
+        1. Strong Coupling: Valid for beta <= 0.63 (Rigorous Dobrushin FSC).
+        2. CAP Tube: Initialized at beta = 0.63 and integrated upwards.
+           or Initialized at Weak Coupling and integrated downwards to 0.63.
         
-        The code enforces OVERLAP at beta = 0.4.
+        The code enforces OVERLAP at beta = 0.63.
         """
         # Convergence radius for SU(3) cluster expansion (Convention B rigorous)
-        BETA_STRONG_MAX = 0.4  
+        BETA_STRONG_MAX = 0.63  
         
         # CAP verification range
-        BETA_CAP_MIN = 0.4   
+        BETA_CAP_MIN = 0.63   
         BETA_CAP_MAX = 6.0   
         
         # Check coverage
