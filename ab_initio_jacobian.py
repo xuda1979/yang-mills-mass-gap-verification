@@ -211,13 +211,20 @@ class AbInitioJacobianEstimator:
         
         return beta_new
 
-    def compute_anisotropy_gradient(self, beta: Interval) -> Interval:
+    def compute_anisotropy_gradient(self, beta: float) -> Interval:
         """
         Computes the Jacobian element J_xi = d(xi')/d(xi) for the anisotropy parameter.
         Uses Resummed Perturbation Theory to prove that spatial anisotropy contracts.
         J_xi ~ exp(c_aniso * g^2).
         """
-        gsq = Interval(6.0, 6.0).div_interval(beta)
+        # Ensure beta is treated as an interval for calculation
+        # Check if beta has 'lower' and 'upper' attributes (duck typing for Interval)
+        if hasattr(beta, 'lower') and hasattr(beta, 'upper'):
+            beta_int = beta
+        else:
+            beta_int = Interval(beta, beta)
+
+        gsq = Interval(6.0, 6.0).div_interval(beta_int)
         
         # Rigorous Interval for the 1-loop anisotropy coefficient c_aniso
         # Value is roughly -0.30 to -0.27.

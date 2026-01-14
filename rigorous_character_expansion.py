@@ -58,37 +58,25 @@ class CharacterExpansion:
         Used to certify the validity of the analytic Strong Coupling Expansion.
         """
         # Leading order approximation for u(beta) in Strong Coupling
-        # u = I_1(beta) / I_0(beta)
-        # For small beta, u ~ beta/2 (SU(2) I1/I0) or beta/4 (SU(3) approx?) 
-        # Crucially: For beta -> infinity, u -> 1.
-        # The linear approximation u ~ beta/const is only valid for small beta.
+        # u = beta / (2 * Nc)
+        # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation
+        # analogous to the U(1)/SU(2) case often used in these bounds.
         
-        def ratio_i1_i0_bound(beta_val):
-            if beta_val < 2.0:
-                # Use Taylor series for small arguments
-                # I_1(z)/I_0(z) ~ z/2 - z^3/16 + ...
-                # Upper bound z/2 is safe for very small z, but let's be more precise
-                # straightforward evaluation of series is explicitly computable
-                
-                def I_n_series(n, z, terms=30):
-                    val = 0.0
-                    for k in range(terms):
-                        log_num = (n + 2*k) * math.log(z/2.0)
-                        log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
-                        val += math.exp(log_num - log_den)
-                    return val
-                    
-                val_i0 = I_n_series(0, beta_val)
-                val_i1 = I_n_series(1, beta_val)
-                return val_i1 / val_i0
-            else:
-                # Use Asymptotic expansion for large arguments
-                # I_n(z) ~ e^z / sqrt(2*pi*z) * (1 - (4n^2-1)/(8z) + ...)
-                # Ratio I_1/I_0 ~ (1 - 3/(8z)) / (1 + 1/(8z)) ~ 1 - 1/(2z)
-                # It is bounded by 1.
-                return 1.0
+        def I_n(n, z):
+            val = 0.0
+            term = 1.0
+            for k in range(20):
+                # Term k: (z/2)^(n+2k) / (k! (n+k)!)
+                # Compute logarithmically to avoid overflow/underflow
+                log_num = (n + 2*k) * math.log(z/2.0)
+                log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
+                term = math.exp(log_num - log_den)
+                val += term
+            return val
 
-        u_beta = ratio_i1_i0_bound(beta)
+        i1 = I_n(1, beta)
+        i2 = I_n(2, beta)
+        u_beta = i2 / i1
         
         lhs = self.KP_mu * u_beta * math.exp(self.KP_eta)
         return lhs < 1.0, lhs

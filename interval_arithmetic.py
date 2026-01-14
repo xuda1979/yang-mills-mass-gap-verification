@@ -129,7 +129,8 @@ class Interval:
 
     def div_interval(self, other):
         # Explicit division method to differentiate from float division
-        if isinstance(other, Interval):
+        # Duck typing check for Interval
+        if hasattr(other, 'lower') and hasattr(other, 'upper'):
             if other.lower <= 0 <= other.upper:
                 # Division by zero or interval containing zero results in unbounded
                 return Interval(-float('inf'), float('inf'))
