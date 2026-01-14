@@ -18,62 +18,17 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional
 
 # Import the existing Interval class
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
+
 try:
     from interval_arithmetic import Interval
 except ImportError:
     try:
-        from phase2.interval_arithmetic.interval import Interval
+        from .interval_arithmetic import Interval
     except ImportError:
-        # Use the fallback defined in rigorous_constants_derivation or redefine here
-        class Interval:
-            def __init__(self, lower, upper):
-                self.lower = float(lower)
-                self.upper = float(upper)
-            def __add__(self, other):
-                if isinstance(other, Interval):
-                    lo = self.lower + other.lower
-                    hi = self.upper + other.upper
-                else:
-                    val = float(other)
-                    lo = self.lower + val
-                    hi = self.upper + val
-                return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
-        def __sub__(self, other):
-             if isinstance(other, Interval):
-                lo = self.lower - other.upper
-                hi = self.upper - other.lower
-             else:
-                val = float(other)
-                lo = self.lower - val
-                hi = self.upper - val
-             return Interval(math.nextafter(lo, -math.inf), math.nextafter(hi, math.inf))
-        def __mul__(self, other):
-            if isinstance(other, Interval):
-                p = [self.lower*other.lower, self.lower*other.upper, 
-                     self.upper*other.lower, self.upper*other.upper]
-                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-            val = float(other)
-            p = [self.lower*val, self.upper*val]
-            return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-        def div_interval(self, other):
-            if isinstance(other, Interval):
-                if other.lower <= 0 <= other.upper: 
-                     return Interval(-float('inf'), float('inf'))
-                p = [self.lower/other.lower, self.lower/other.upper,
-                     self.upper/other.lower, self.upper/other.upper]
-                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-            val = float(other)
-            return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
-        def __str__(self):
-            return f"[{self.lower:.6g}, {self.upper:.6g}]"
-        def __repr__(self):
-            return self.__str__()
-        @property
-        def mid(self):
-            return (self.lower + self.upper) / 2.0
-        @property
-        def width(self):
-            return self.upper - self.lower
+        raise ImportError("Rigorous Interval class not found. Run from verification directory.")
 
 class CharacterExpansion:
     """
@@ -103,25 +58,37 @@ class CharacterExpansion:
         Used to certify the validity of the analytic Strong Coupling Expansion.
         """
         # Leading order approximation for u(beta) in Strong Coupling
-        # u = beta / (2 * Nc)
-        # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation
-        # analogous to the U(1)/SU(2) case often used in these bounds.
+        # u = I_1(beta) / I_0(beta)
+        # For small beta, u ~ beta/2 (SU(2) I1/I0) or beta/4 (SU(3) approx?) 
+        # Crucially: For beta -> infinity, u -> 1.
+        # The linear approximation u ~ beta/const is only valid for small beta.
         
-        def I_n(n, z):
-            val = 0.0
-            term = 1.0
-            for k in range(20):
-                # Term k: (z/2)^(n+2k) / (k! (n+k)!)
-                # Compute logarithmically to avoid overflow/underflow
-                log_num = (n + 2*k) * math.log(z/2.0)
-                log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
-                term = math.exp(log_num - log_den)
-                val += term
-            return val
+        def ratio_i1_i0_bound(beta_val):
+            if beta_val < 2.0:
+                # Use Taylor series for small arguments
+                # I_1(z)/I_0(z) ~ z/2 - z^3/16 + ...
+                # Upper bound z/2 is safe for very small z, but let's be more precise
+                # straightforward evaluation of series is explicitly computable
+                
+                def I_n_series(n, z, terms=30):
+                    val = 0.0
+                    for k in range(terms):
+                        log_num = (n + 2*k) * math.log(z/2.0)
+                        log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
+                        val += math.exp(log_num - log_den)
+                    return val
+                    
+                val_i0 = I_n_series(0, beta_val)
+                val_i1 = I_n_series(1, beta_val)
+                return val_i1 / val_i0
+            else:
+                # Use Asymptotic expansion for large arguments
+                # I_n(z) ~ e^z / sqrt(2*pi*z) * (1 - (4n^2-1)/(8z) + ...)
+                # Ratio I_1/I_0 ~ (1 - 3/(8z)) / (1 + 1/(8z)) ~ 1 - 1/(2z)
+                # It is bounded by 1.
+                return 1.0
 
-        i0 = I_n(0, beta)
-        i1 = I_n(1, beta)
-        u_beta = i1 / i0
+        u_beta = ratio_i1_i0_bound(beta)
         
         lhs = self.KP_mu * u_beta * math.exp(self.KP_eta)
         return lhs < 1.0, lhs

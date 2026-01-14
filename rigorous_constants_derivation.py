@@ -40,60 +40,9 @@ try:
     from interval_arithmetic import Interval
 except ImportError:
     try:
-        from phase2.interval_arithmetic.interval import Interval
-    except ImportError: 
-        # Fallback if phase2 package structure is not perfectly set up in this context
-        # We define a minimal robust Interval class if the import fails
-        import math
-        class Interval:
-            def __init__(self, lower, upper):
-                self.lower = float(lower)
-                self.upper = float(upper)
-            def __add__(self, other):
-                if isinstance(other, Interval):
-                    low = self.lower + other.lower
-                    high = self.upper + other.upper
-                else:
-                    val = float(other)
-                    low = self.lower + val
-                    high = self.upper + val
-                return Interval(math.nextafter(low, -math.inf), math.nextafter(high, math.inf))
-            def __mul__(self, other):
-                if isinstance(other, Interval):
-                    p = [self.lower*other.lower, self.lower*other.upper, 
-                         self.upper*other.lower, self.upper*other.upper]
-                    return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-                val = float(other)
-                p = [self.lower*val, self.upper*val]
-                return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-            def div_interval(self, other):
-                if isinstance(other, Interval):
-                    if other.lower <= 0 <= other.upper: 
-                         # Return infinite interval
-                         return Interval(-float('inf'), float('inf'))
-                    p = [self.lower/other.lower, self.lower/other.upper,
-                         self.upper/other.lower, self.upper/other.upper]
-                    return Interval(math.nextafter(min(p), -math.inf), math.nextafter(max(p), math.inf))
-                val = float(other)
-                return Interval(math.nextafter(self.lower/val, -math.inf), math.nextafter(self.upper/val, math.inf))
-            def __str__(self):
-                return f"[{self.lower:.6g}, {self.upper:.6g}]"
-            def __repr__(self):
-                return self.__str__()
-            @property
-            def mid(self):
-                return (self.lower + self.upper) / 2.0
-            @property
-            def width(self):
-                return self.upper - self.lower
-            def sqrt(self):
-                if self.lower < 0: raise ValueError("sqrt of negative")
-                return Interval(math.sqrt(self.lower), math.sqrt(self.upper))
-            def log(self):
-                if self.lower <= 0: raise ValueError("log of non-positive")
-                return Interval(math.log(self.lower), math.log(self.upper))
-            def exp(self):
-                return Interval(math.exp(self.lower), math.exp(self.upper))
+        from .interval_arithmetic import Interval
+    except ImportError:
+        raise ImportError("Rigorous Interval class not found. Run from verification directory.")
 
 
 # Import the Character Expansion Module for rigorous matrix elements
@@ -245,26 +194,42 @@ class AbInitioBounds:
         Computes the contraction rates (eigenvalues) of the linearized RG map.
         
         RIGOROUS DERIVATION (Post-Audit):
-        Uses the CharacterExpansion module to compute the Jacobian matrix J
-        from the Wilson Action's Fluctuation Determinant and coefficient evolution.
+        Uses the AbInitioJacobianEstimator module to compute the Jacobian matrix J.
         
         Returns:
             (lambda_relevant, lambda_irrelevant)
         """
-        if CharacterExpansion:
-            # Use the new Ab Initio module
-            exp = CharacterExpansion()
-            matrix = exp.compute_jacobian_estimates(beta)
-            
-            # The relevant direction is the expansion of the plaquette (marginal)
-            lambda_relevant = matrix[0,0]
-            
-            # The irrelevant direction is the contraction of the rectangle/non-plaquette
-            lambda_irrelevant = matrix[1,1]
-            
-            return lambda_relevant, lambda_irrelevant
-        else:
-            raise RuntimeError("CharacterExpansion module not found. Cannot perform Ab Initio verification without it.")
+        try:
+            from ab_initio_jacobian import AbInitioJacobianEstimator
+        except ImportError:
+            from .ab_initio_jacobian import AbInitioJacobianEstimator
+
+        estimator = AbInitioJacobianEstimator()
+        matrix = estimator.compute_jacobian(beta)
+        
+        # Matrix is [ [J_pp, J_pr], [J_rp, J_rr] ]
+        # Since off-diagonal mixings are small, we approximate eigenvalues by diagonals
+        # with Gershgorin circle theorem bounds for rigor.
+        
+        j_pp = matrix[0][0]
+        j_pr = matrix[0][1]
+        j_rp = matrix[1][0]
+        j_rr = matrix[1][1]
+        
+        # Unconditionally add radius to diagonal to bound eigenvalue
+        # |lambda - a_ii| <= sum_{j!=i} |a_ij|
+        
+        # Magnitude of mixing
+        r_row1 = max(abs(j_pr.lower), abs(j_pr.upper))
+        r_row2 = max(abs(j_rp.lower), abs(j_rp.upper))
+        
+        # Relevant (Plaquette)
+        lambda_relevant = Interval(j_pp.lower - r_row1, j_pp.upper + r_row1)
+        
+        # Irrelevant (Tail)
+        lambda_irrelevant = Interval(j_rr.lower - r_row2, j_rr.upper + r_row2)
+        
+        return lambda_relevant, lambda_irrelevant
 
     @staticmethod
     def compute_pollution_constant(beta: Interval) -> Interval:

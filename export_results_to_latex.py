@@ -25,6 +25,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from interval_arithmetic import Interval
 from ab_initio_jacobian import AbInitioJacobianEstimator
+from dobrushin_checker import DobrushinChecker
 
 def run_full_verification():
     """
@@ -43,12 +44,25 @@ def run_full_verification():
             "weak_coupling_min": 6.0
         },
         "verification_points": {},
+        "dobrushin_check": {},
         "summary": {}
     }
     
     jacobian_estimator = AbInitioJacobianEstimator()
+    dobrushin_checker = DobrushinChecker()
     
-    # Verification points
+    # 1. Run Dobrushin Check for Strong Coupling Closure
+    dobrushin_beta = 0.40
+    d_norm_interval = dobrushin_checker.compute_interaction_norm(Interval(dobrushin_beta, dobrushin_beta))
+    dobrushin_passed = d_norm_interval.upper < 1.0
+    
+    results["dobrushin_check"] = {
+        "beta": dobrushin_beta,
+        "norm_upper": round(d_norm_interval.upper, 4),
+        "status": "PASS" if dobrushin_passed else "FAIL"
+    }
+
+    # 2. Verification points for Intermediate/Weak Regimes
     check_points = [0.40, 0.50, 0.63, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
     
     all_passed = True
@@ -151,6 +165,11 @@ def export_to_latex(results, output_path):
         f"\\newcommand{{\\VerBetaIntermediateMin}}{{{results['regimes']['intermediate_min']:.2f}}}",
         f"\\newcommand{{\\VerBetaIntermediateMax}}{{{results['regimes']['intermediate_max']:.1f}}}",
         f"\\newcommand{{\\VerBetaWeakMin}}{{{results['regimes']['weak_coupling_min']:.1f}}}",
+        "",
+        "% --- Dobrushin Strong Coupling Bridge ---",
+        f"\\newcommand{{\\VerDobrushinBeta}}{{{results['dobrushin_check']['beta']:.2f}}}",
+        f"\\newcommand{{\\VerDobrushinNorm}}{{{results['dobrushin_check']['norm_upper']:.4f}}}",
+        f"\\newcommand{{\\VerDobrushinStatus}}{{{results['dobrushin_check']['status']}}}",
         "",
         "% --- Summary Statistics ---",
         f"\\newcommand{{\\VerTotalPoints}}{{{results['summary']['total_points']}}}",

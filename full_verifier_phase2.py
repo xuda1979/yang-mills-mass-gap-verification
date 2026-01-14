@@ -14,7 +14,12 @@ import numpy as np
 try:
     from interval_arithmetic import Interval
 except ImportError:
-    from phase2.interval_arithmetic.interval import Interval
+    try:
+        from .interval_arithmetic import Interval
+    except ImportError:
+        # Final fallback for nested runs
+        sys.path.append(os.path.join(os.path.dirname(__file__), 'phase2', 'interval_arithmetic'))
+        from interval import Interval
 
 # Mocking OperatorBasis and TubeDefinition for standalone run if modules missing
 # BUT assuming they exist as per file list.

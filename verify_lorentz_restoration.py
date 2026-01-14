@@ -103,7 +103,7 @@ def verify_lorentz_trajectory():
         print("By the Inverse Function Theorem, a unique restoration trajectory exists.")
         
         # Save Certificate
-        with open('certificate_anisotropy.json', 'w') as f:
+        with open('certificate_lorentz.json', 'w') as f:
             json.dump({
                 "verified": True, 
                 "jacobian_bounds": [min_jacobian, max_jacobian],

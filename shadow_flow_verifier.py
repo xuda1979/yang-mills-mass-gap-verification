@@ -26,10 +26,14 @@ import os
 
 # Import Rigorous Components
 sys.path.append(os.path.dirname(__file__))
+# Import Rigorous Interval Class (Single Source of Truth)
 try:
     from interval_arithmetic import Interval
 except ImportError:
-    from phase2.interval_arithmetic.interval import Interval
+    try:
+        from .interval_arithmetic import Interval
+    except ImportError:
+        raise ImportError("Rigorous Interval class not found.")
 # Replaced legacy module with new ab_initio_jacobian
 from ab_initio_jacobian import AbInitioJacobianEstimator
 from rigorous_constants_derivation import AbInitioBounds

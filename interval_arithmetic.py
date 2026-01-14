@@ -4,14 +4,17 @@ Implements rigorous interval arithmetic with outward rounding.
 """
 
 import math
-import numpy as np
 
 class Interval:
     """
     Rigorous interval arithmetic with automatic outward rounding.
     Represents a closed interval [lower, upper].
-    Uses math.nextafter / np.nextafter to ensure containment of true values.
+    Uses math.nextafter to ensure containment of true values.
     """
+    # Rigorous Constants
+    PI_LOWER = 3.141592653589793
+    PI_UPPER = 3.141592653589794
+    
     def __init__(self, lower, upper):
         self.lower = float(lower)
         self.upper = float(upper)
@@ -28,6 +31,15 @@ class Interval:
     def from_value(cls, value):
         v = float(value)
         return cls(v, v)
+    
+    @classmethod
+    def pi(cls):
+        return cls(cls.PI_LOWER, cls.PI_UPPER)
+
+    @classmethod
+    def log2(cls):
+        # 0.6931471805599453
+        return cls(0.6931471805599452, 0.6931471805599454)
         
     def __repr__(self):
         return f"[{self.lower:.6g}, {self.upper:.6g}]"
