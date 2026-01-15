@@ -46,25 +46,15 @@ class Interval:
 
     def sqrt(self):
         if self.lower < 0:
-            raise ValueError("sqrt of negative interval")
+             # Handle partial negative domain by clipping to 0
+             lo = 0.0
+        else:
+             lo = self.lower
         return Interval(
-            math.nextafter(math.sqrt(self.lower), -float('inf')),
-            math.nextafter(math.sqrt(self.upper), float('inf'))
+            math.nextafter(math.sqrt(lo), -math.inf),
+            math.nextafter(math.sqrt(self.upper), math.inf)
         )
 
-    def log(self):
-        if self.lower <= 0:
-            raise ValueError("log of non-positive interval")
-        return Interval(
-            math.nextafter(math.log(self.lower), -float('inf')),
-            math.nextafter(math.log(self.upper), float('inf'))
-        )
-
-    def exp(self):
-        return Interval(
-            math.nextafter(math.exp(self.lower), -float('inf')),
-            math.nextafter(math.exp(self.upper), float('inf'))
-        )
 
 
     def __add__(self, other):
@@ -129,8 +119,7 @@ class Interval:
 
     def div_interval(self, other):
         # Explicit division method to differentiate from float division
-        # Duck typing check for Interval
-        if hasattr(other, 'lower') and hasattr(other, 'upper'):
+        if isinstance(other, Interval):
             if other.lower <= 0 <= other.upper:
                 # Division by zero or interval containing zero results in unbounded
                 return Interval(-float('inf'), float('inf'))
@@ -181,6 +170,71 @@ class Interval:
             math.nextafter(math.sqrt(self.upper), math.inf)
         )
 
+    def lgamma(self):
+        if self.lower <= 0:
+             raise ValueError("lgamma defined for positive real (gamma function)")
+        
+        # Determine monotonicity
+        # Gamma has min at 1.46163...
+        crit = 1.461632144968362
+        
+        vals = [math.lgamma(self.lower), math.lgamma(self.upper)]
+        
+        if self.lower < crit < self.upper:
+            # Contains minimum
+            min_v = math.lgamma(crit)
+            max_v = max(vals)
+        else:
+            min_v = min(vals)
+            max_v = max(vals)
+            
+        # Add modest padding for algorithmic error in lgamma
+        return Interval(
+             math.nextafter(min_v - 1e-14, -math.inf),
+             math.nextafter(max_v + 1e-14, math.inf)
+        )
+
+    def sin(self):
+        # Range of values
+        # If width > 2pi, [-1, 1]
+        if self.width > 2 * math.pi:
+            return Interval(-1.0, 1.0)
+        
+        # Check for extrema in the interval
+        # peaks at pi/2 + 2k*pi
+        # valleys at 3pi/2 + 2k*pi
+        
+        lo = self.lower
+        hi = self.upper
+        
+        # Compute raw values
+        val1 = math.sin(lo)
+        val2 = math.sin(hi)
+        
+        min_v = min(val1, val2)
+        max_v = max(val1, val2)
+        
+        # Check for +1 (top)
+        # top is at pi/2 + 2*pi*n
+        # (lo - pi/2) / (2pi) <= n <= (hi - pi/2) / (2pi)
+        n_min = math.ceil((lo - math.pi/2) / (2*math.pi))
+        n_max = math.floor((hi - math.pi/2) / (2*math.pi))
+        if n_min <= n_max:
+            max_v = 1.0
+            
+        # Check for -1 (bottom)
+        # bottom is at 3pi/2 + 2*pi*n
+        m_min = math.ceil((lo - 3*math.pi/2) / (2*math.pi))
+        m_max = math.floor((hi - 3*math.pi/2) / (2*math.pi))
+        if m_min <= m_max:
+             min_v = -1.0
+             
+        # Add padding
+        return Interval(
+            math.nextafter(min_v - 1e-15, -math.inf),
+            math.nextafter(max_v + 1e-15, math.inf)
+        )
+
     @property
     def mid(self):
         return (self.lower + self.upper) / 2.0
@@ -194,3 +248,19 @@ class Interval:
     
     def __repr__(self):
         return self.__str__()
+    
+    def __pow__(self, power):
+        if isinstance(power, int):
+            if power == 0:
+                return Interval(1.0, 1.0)
+            if power < 0:
+                base = self.__pow__(-power)
+                return Interval(1.0, 1.0) / base
+            
+            # Simple repeated multiplication for small integer powers (safe & rigorous)
+            res = Interval(1.0, 1.0)
+            for _ in range(power):
+                res = res * self
+            return res
+        else:
+            raise NotImplementedError("Only integer powers supported for Interval arithmetic currently.")

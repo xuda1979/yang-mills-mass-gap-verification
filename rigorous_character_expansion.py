@@ -62,24 +62,101 @@ class CharacterExpansion:
         # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation
         # analogous to the U(1)/SU(2) case often used in these bounds.
         
-        def I_n(n, z):
-            val = 0.0
-            term = 1.0
-            for k in range(20):
-                # Term k: (z/2)^(n+2k) / (k! (n+k)!)
-                # Compute logarithmically to avoid overflow/underflow
-                log_num = (n + 2*k) * math.log(z/2.0)
-                log_den = math.lgamma(k + 1) + math.lgamma(n + k + 1)
-                term = math.exp(log_num - log_den)
-                val += term
+        # Use rigorous Interval arithmetic for beta if passed as float
+        if isinstance(beta, (float, int)):
+             beta_int = Interval.from_value(beta)
+        elif isinstance(beta, Interval):
+             beta_int = beta
+        else:
+             raise ValueError("beta must be float, int, or Interval")
+
+        def I_n_interval(n, z_int):
+            val = Interval(0.0, 0.0)
+            
+            # Series for modified Bessel function I_n(z)
+            # Sum_{k=0 to inf} (z/2)^(n+2k) / (k! (n+k)!)
+            
+            # We must truncate the series and bound the remainder.
+            # Truncation at K=20 is chosen for strong coupling (small z).
+            K_trunc = 20
+            
+            z_half = z_int / Interval(2.0, 2.0)
+            
+            for k in range(K_trunc):
+                # Term k
+                # log term
+                # n + 2k
+                exponent = n + 2*k
+                
+                # We need interval power: (z/2)^(n+2k)
+                # Since exponent is integer >= 0, we can use pow
+                num_term = z_half ** exponent
+                
+                # Denominator: k! (n+k)!
+                # We use lgamma on float values since k, n are integers (no interval needed for indices)
+                # Gamma(x) = (x-1)!
+                # lgamma(k+1) = log(k!)
+                den_log_val = math.lgamma(k + 1) + math.lgamma(n + k + 1)
+                
+                # Convert this float constant to Interval
+                den_log = Interval.from_value(den_log_val)
+                
+                # Combine: exp(log(num) - log(den))
+                # Wait, num_term is Interval. 
+                # term = num_term / exp(den_log)
+                
+                denom = den_log.exp()
+                term = num_term / denom
+                
+                val = val + term
+                
+            # Remainder Bound for I_n(z)
+            # R_K <= (z/2)^(n+2K) / (K! (n+K)!) * (1 / (1 - eps))?
+            # Simple bound: The series is dominated by geometric series for small z.
+            # ratio r = (z/2)^2 / ((K+1)(n+K+1))
+            # If r < 1, Remainder < Term_K * r / (1 - r)
+            
+            last_k = K_trunc
+            exponent = n + 2*last_k
+            num_term = z_half ** exponent
+            den_log_val = math.lgamma(last_k + 1) + math.lgamma(n + last_k + 1)
+            term_K = num_term / Interval.from_value(den_log_val).exp()
+            
+            # ratio approx using upper bound of z
+            z_upper = z_int.upper
+            ratio = (z_upper/2.0)**2 / ((last_k+1)*(n+last_k+1))
+            
+            if ratio < 0.5:
+                 geom_sum = ratio / (1.0 - ratio)
+                 remainder = term_K * Interval.from_value(geom_sum)
+                 val = val + Interval(0.0, remainder.upper)
+            else:
+                 # Failed to converge fast enough
+                 raise ValueError("Bessel series did not converge fast enough for rigorous bound")
+                 
             return val
 
-        i1 = I_n(1, beta)
-        i2 = I_n(2, beta)
-        u_beta = i2 / i1
+        i1 = I_n_interval(1, beta_int)
+        i2 = I_n_interval(2, beta_int)
         
-        lhs = self.KP_mu * u_beta * math.exp(self.KP_eta)
-        return lhs < 1.0, lhs
+        # u = I_2 / I_1 (Convention fix: Check if it's I2/I1 or I1/I0)
+        # Original text said "Convention B (u = I1/I0)" but code did I2/I1.
+        # Strong coupling parameter usually decays as beta decreases.
+        # I2/I1 ~ beta/4 / (beta/2) ~ 1/2? No.
+        # I_n(z) ~ (z/2)^n / n!
+        # I2/I1 ~ (z^2/8)/2! / (z/2) = (z^2/16) / (z/2) = z/8.
+        # I1/I0 ~ (z/2) / 1 = z/2. 
+        # u(beta) should be small ~ beta.
+        # Paper says: u = I1/I0 for SU(2).
+        # We will use I1/I0 as per standard convention B mentioned in user prompt.
+        
+        # Actually, let's stick to what's safer: I1/I0 is the character coefficient for the fundamental rep.
+        
+        u_beta = i1 / I_n_interval(0, beta_int)
+        
+        lhs = Interval.from_value(self.KP_mu) * u_beta * Interval.from_value(self.KP_eta).exp()
+        return lhs.upper < 1.0, lhs.upper
+
 
     def compute_fluctuation_determinant(self, beta: Interval) -> Interval:
         """

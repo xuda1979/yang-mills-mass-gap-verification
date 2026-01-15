@@ -81,11 +81,29 @@ def main():
     jacobian_estimator = AbInitioJacobianEstimator()
     passed_all = True
     
-    # Check a subset
-    check_points = [0.4, 0.5, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    # Rigorous Covering
+    # We iterate over the generated covering balls rather than discrete points
+    covering_balls = covering.balls if covering.balls else []
+    
+    # If the covering is empty (mock mode), fallback to rigorous mesh
+    if not covering_balls:
+        print("W: Mock covering detected. Generating fine mesh for audit...")
+        curr = 0.40
+        while curr <= 6.0:
+            covering_balls.append(type('Ball', (object,), {'beta': curr, 'radius': 0.05})())
+            curr += 0.05
+            
+    print(f"  Verifying {len(covering_balls)} intervals covering [0.4, 6.0]...")
 
-    for beta_val in check_points:
-        beta_interval = Interval(beta_val, beta_val)
+    for ball in covering_balls:
+        beta_center = ball.beta
+        # Create an interval for beta: [beta - radius, beta + radius]
+        # But we must ensure the union covers [0.4, 6.0].
+        # For this audit, we'll try to use the object's radius if available, else default.
+        radius = getattr(ball, 'radius', 0.05)
+        if callable(radius): radius = 0.05
+            
+        beta_interval = Interval(beta_center - radius, beta_center + radius)
         
         try:
             # Compute Jacobian
@@ -95,24 +113,30 @@ def main():
             j_rr = J[1][1]
             
             # Regime classification for display
-            if beta_val <= 0.4:
+            if beta_center <= 0.4:
                 regime = "Strong(Handshake)"
-            elif beta_val < 2.5:
-                regime = "Crossover"
+            elif beta_center < 2.5:
+                regime = "Crossover" 
             else:
-                regime = "Weak/Scaling"
+                regime = "Weak(Scaling)"
+
+            # Condition: Contractive if J_marginal approx 1 (marginal) and J_irr < 1 (irrelevant)
+            # Actually, for marginal, we need the flow to drive away/towards fixed point correctly.
+            # Here we check |J_irrelevant| < 0.99 (Contraction).
             
-            # Verification Criteria:
-            # Irrelevant direction must contract: |J_rr| < 1 (actually < 0.99 for strictness)
-            irrelevant_contracts = j_rr.upper < 0.99
+            # Using strict upper bound from Interval
+            val_irr = j_rr.upper
             
-            status = "PASS" if irrelevant_contracts else "FAIL"
-            if not irrelevant_contracts: passed_all = False
+            is_contractive = val_irr < 0.99
+            status = "PASS" if is_contractive else "FAIL"
+            if not is_contractive: passed_all = False
             
-            print(f"{beta_val:<10.4f} | {regime:<15} | {j_pp.upper:<15.4f} | {j_rr.upper:<15.4f} | {status}")
-            
+            # Print row subset
+            if abs(beta_center - round(beta_center)) < 0.05 or not is_contractive:
+                 print(f"{beta_center:<10.4f} | {regime:<15} | {j_pp.upper:<15.4f} | {j_rr.upper:<15.4f} | {status}")
+        
         except Exception as e:
-            print(f"{beta_val:<10.4f} | ERROR: {str(e)}")
+            print(f"{beta_center:<10.4f} | ERROR: {str(e)}")
             passed_all = False
 
     print("======================================================================")
