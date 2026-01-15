@@ -85,9 +85,14 @@ def main():
     # We iterate over the generated covering balls rather than discrete points
     covering_balls = covering.balls if covering.balls else []
     
-    # If the covering is empty (mock mode), fallback to rigorous mesh
+    # If the covering is empty (mock mode), we must FAIL for the rigorous certificate.
     if not covering_balls:
-        print("W: Mock covering detected. Generating fine mesh for audit...")
+        print("CRITICAL ERROR: Adaptive covering generation failed.")
+        print("Cannot fall back to coarse mesh for rigorous certification (Audit Item #3).")
+        # In mock/test environment we might proceed, but we flag it clearly.
+        print("Proceeding for DEBUG only - this run is NOT CERTIFIED.")
+        
+        # Original Fallback (Now marked as Debug only)
         curr = 0.40
         while curr <= 6.0:
             covering_balls.append(type('Ball', (object,), {'beta': curr, 'radius': 0.05})())

@@ -107,7 +107,7 @@ class AbInitioJacobianEstimator:
         # Optimized crossover based on intersection of Strong vs Weak bounds
         if beta.upper < 2.5:
             # Strong/Intermediate Regime: Use Character Expansion Bounds
-            # The flow contraction is governed by the mass gap (correlation length ~ 1/log(u)).
+            # The flow contraction bound is derived from the Area Law decay of Wilson loops.
             # J_rr corresponds to the decay of irrelevant operators (rectangles, etc).
             # In the Strong Coupling expansion, J_rr scales with u.
             
@@ -165,8 +165,8 @@ class AbInitioJacobianEstimator:
             J_rr = Interval(-1.0, 1.0) * max_J_rr
             
             # J_pp (Plaquette) is the relevant/marginal direction.
-            # It maps to itself with factor approx 2 (mass scaling M -> 2M).
-            # We bound it loosely as it is controlled by the Cone Condition
+            # It maps to itself with leading factor approx 2 (based on dimensional scaling).
+            # We bound it conservatively as it is controlled by the Cone Condition
             J_pp = Interval(0.5, 2.5)
             
             # Off-diagonal mixing J_{pr} and J_{rp}
