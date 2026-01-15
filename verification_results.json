@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-01-15T10:04:51.775855",
+    "generated": "2026-01-15T14:54:35.375470",
     "version": "1.0",
     "status": "PASS"
   },
@@ -16,8 +16,8 @@
       "regime": "strong",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.019675,
-      "J_irrelevant_upper": 0.019675,
+      "J_irrelevant_lower": -0.029513,
+      "J_irrelevant_upper": 0.029513,
       "contracts": true,
       "status": "PASS"
     },
@@ -26,8 +26,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.030675,
-      "J_irrelevant_upper": 0.030675,
+      "J_irrelevant_lower": -0.046013,
+      "J_irrelevant_upper": 0.046013,
       "contracts": true,
       "status": "PASS"
     },
@@ -36,8 +36,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.048526,
-      "J_irrelevant_upper": 0.048526,
+      "J_irrelevant_lower": -0.072788,
+      "J_irrelevant_upper": 0.072788,
       "contracts": true,
       "status": "PASS"
     },
@@ -46,8 +46,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.120499,
-      "J_irrelevant_upper": 0.120499,
+      "J_irrelevant_lower": -0.180749,
+      "J_irrelevant_upper": 0.180749,
       "contracts": true,
       "status": "PASS"
     },
@@ -56,16 +56,16 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.45035,
-      "J_irrelevant_upper": 0.45035,
+      "J_irrelevant_lower": -0.675525,
+      "J_irrelevant_upper": 0.675525,
       "contracts": true,
       "status": "PASS"
     },
     "3.00": {
       "beta": 3.0,
       "regime": "crossover",
-      "J_marginal_lower": 1.096567,
-      "J_marginal_upper": 1.096567,
+      "J_marginal_lower": 1.094811,
+      "J_marginal_upper": 1.098323,
       "J_irrelevant_lower": 0.25,
       "J_irrelevant_upper": 0.4,
       "contracts": true,
@@ -74,8 +74,8 @@
     "4.00": {
       "beta": 4.0,
       "regime": "crossover",
-      "J_marginal_lower": 1.072425,
-      "J_marginal_upper": 1.072425,
+      "J_marginal_lower": 1.071108,
+      "J_marginal_upper": 1.073742,
       "J_irrelevant_lower": 0.25,
       "J_irrelevant_upper": 0.3625,
       "contracts": true,
@@ -84,8 +84,8 @@
     "5.00": {
       "beta": 5.0,
       "regime": "weak",
-      "J_marginal_lower": 1.05794,
-      "J_marginal_upper": 1.05794,
+      "J_marginal_lower": 1.056887,
+      "J_marginal_upper": 1.058994,
       "J_irrelevant_lower": 0.25,
       "J_irrelevant_upper": 0.34,
       "contracts": true,
@@ -94,8 +94,8 @@
     "6.00": {
       "beta": 6.0,
       "regime": "weak",
-      "J_marginal_lower": 1.048283,
-      "J_marginal_upper": 1.048283,
+      "J_marginal_lower": 1.047406,
+      "J_marginal_upper": 1.049161,
       "J_irrelevant_lower": 0.25,
       "J_irrelevant_upper": 0.325,
       "contracts": true,
@@ -104,15 +104,15 @@
   },
   "dobrushin_check": {
     "beta": 0.4,
-    "norm_upper": 0.3991,
+    "norm_upper": 0.4,
     "status": "PASS"
   },
   "summary": {
     "all_passed": true,
     "total_points": 9,
     "passed_points": 9,
-    "max_J_irrelevant": 0.45035,
-    "min_J_irrelevant": 0.019675,
-    "contraction_margin": 0.53965
+    "max_J_irrelevant": 0.675525,
+    "min_J_irrelevant": 0.029513,
+    "contraction_margin": 0.314475
   }
 }

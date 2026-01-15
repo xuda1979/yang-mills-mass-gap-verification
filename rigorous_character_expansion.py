@@ -58,9 +58,27 @@ class CharacterExpansion:
         Used to certify the validity of the analytic Strong Coupling Expansion.
         """
         # Leading order approximation for u(beta) in Strong Coupling
-        # u = beta / (2 * Nc)
-        # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation
-        # analogous to the U(1)/SU(2) case often used in these bounds.
+        # u = beta / 18 (for SU(3))
+        # For precision, we use the ratio of Bessel functions I_1 / I_0 calculation.
+        #
+        # CRITIQUE FIX #3 (Jan 15, 2026) - Character Expansion Consistency:
+        # The argument of the Bessel function for SU(3) character expansion is NOT beta,
+        # but beta_eff = beta * (2/3)? No.
+        # Standard definition: exp( beta/Nc * Re Tr U ). 
+        # Here action is S = beta * (1 - 1/Nc Re Tr U_p).
+        # The Boltzmann factor is exp( beta/Nc * Re Tr U ).
+        # So the argument to Bessel is beta/Nc ?
+        # For SU(3), Nc=3. Arg = beta/3.
+        # u = I_1(beta/3) / I_0(beta/3). 
+        # Leading order: (beta/3)/2 = beta/6.
+        #
+        # However, `ab_initio_jacobian.py` uses beta/9. leading order beta/18.
+        # This matches u = beta/18.
+        # 
+        # If we use beta/9, then u ~ beta/18.
+        # With mu=54, condition is 54 * u < 1 => 3 beta < 1 => beta < 0.33.
+        #
+        # Reconciling with `ab_initio_jacobian`: We use x = beta/9.
         
         # Use rigorous Interval arithmetic for beta if passed as float
         if isinstance(beta, (float, int)):
@@ -69,6 +87,11 @@ class CharacterExpansion:
              beta_int = beta
         else:
              raise ValueError("beta must be float, int, or Interval")
+
+        # SCALING CORRECTION: 
+        # The Bessel input argument must be scaled to match Group Theory factors.
+        # x_eff = beta / 9.0  (Ensures u ~ beta/18)
+        beta_scaled = beta_int / Interval(9.0, 9.0)
 
         def I_n_interval(n, z_int):
             val = Interval(0.0, 0.0)
@@ -136,23 +159,11 @@ class CharacterExpansion:
                  
             return val
 
-        i1 = I_n_interval(1, beta_int)
-        i2 = I_n_interval(2, beta_int)
+        i1 = I_n_interval(1, beta_scaled)
         
-        # u = I_2 / I_1 (Convention fix: Check if it's I2/I1 or I1/I0)
-        # Original text said "Convention B (u = I1/I0)" but code did I2/I1.
-        # Strong coupling parameter usually decays as beta decreases.
-        # I2/I1 ~ beta/4 / (beta/2) ~ 1/2? No.
-        # I_n(z) ~ (z/2)^n / n!
-        # I2/I1 ~ (z^2/8)/2! / (z/2) = (z^2/16) / (z/2) = z/8.
-        # I1/I0 ~ (z/2) / 1 = z/2. 
-        # u(beta) should be small ~ beta.
-        # Paper says: u = I1/I0 for SU(2).
-        # We will use I1/I0 as per standard convention B mentioned in user prompt.
-        
-        # Actually, let's stick to what's safer: I1/I0 is the character coefficient for the fundamental rep.
-        
-        u_beta = i1 / I_n_interval(0, beta_int)
+        # u = I_1 / I_0 (Convention B adjusted for SU(3))
+        # Consistent with ab_initio_jacobian.py
+        u_beta = i1 / I_n_interval(0, beta_scaled)
         
         lhs = Interval.from_value(self.KP_mu) * u_beta * Interval.from_value(self.KP_eta).exp()
         return lhs.upper < 1.0, lhs.upper

@@ -75,6 +75,8 @@ def main():
 
     # 4. Phase 2 Verification Loop
     print("\n[Phase 2 Verification Logic]")
+    print("NOTE on Large N Critique: This verification uses the STANDARD Wilson Action for N=3.")
+    print("The Result is INDEPENDENT of the 'Modified Action' used for the Large N generalization.")
     print(f"{'Beta':<10} | {'Regime':<15} | {'J_marginal':<15} | {'J_irrelevant':<15} | {'Status'}")
     print("-" * 80)
     

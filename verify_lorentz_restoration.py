@@ -30,7 +30,7 @@ import numpy as np
 
 # Import Rigorous Components
 sys.path.append(os.path.dirname(__file__))
-from phase2.interval_arithmetic.interval import Interval
+from interval_arithmetic import Interval
 from ab_initio_jacobian import AbInitioJacobianEstimator
 
 def verify_lorentz_trajectory():
@@ -103,7 +103,7 @@ def verify_lorentz_trajectory():
         print("By the Inverse Function Theorem, a unique restoration trajectory exists.")
         
         # Save Certificate
-        with open('certificate_lorentz.json', 'w') as f:
+        with open('certificate_anisotropy.json', 'w') as f:
             json.dump({
                 "verified": True, 
                 "jacobian_bounds": [min_jacobian, max_jacobian],
