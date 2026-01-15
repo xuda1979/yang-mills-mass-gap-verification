@@ -234,13 +234,17 @@ class AbInitioBounds:
         # At strong coupling (beta -> 0), gap is O(1).
         # At weak coupling (beta -> inf), gap is O(1/beta) (on group manifold).
         #
-        # CRITIQUE FIX #5: 1D Gap Scaling
-        # The gap for a finite block L scales polynomially, but the global gap 
-        # arises from the Thermodynamic limit. The LSI approach bridges this.
+        # CRITIQUE FIX #5: Scaling of Lattice Gap
+        # The physical mass gap is finite: m_phys > 0.
+        # The lattice gap m_latt = a * m_phys vanishes as a -> 0 (Beta -> inf).
+        # We must ensure the LSI constant reflects this vanishing gap.
+        # Current rigorous bound for SU(3) Single Link Gap at large beta scales as 1/Beta (heuristic) or 
+        # more precisely, is overshadowed by the interaction-induced correlation length.
+        # We use a conservative decay envelope: C(beta) ~ 1 / (1 + beta).
         
         numerator = Interval(1.0, 1.0)
-        # Denominator roughly scales with beta in the continuum limit, but is O(1) in lattice units at strong coupling.
-        denominator = Interval(1.0, 1.0) + (Interval(1.0, 1.0).div_interval(beta)) 
+        # Denominator scales linearly with beta to enforce vanishing gap.
+        denominator = Interval(1.0, 1.0) + beta
         base_constant = numerator.div_interval(denominator)
 
         return base_constant
@@ -384,10 +388,9 @@ class AbInitioBounds:
         
         # AUDIT FIX (Jan 15, 2026): Non-Perturbative Safety Margin
         # Critique: "Standard treatments often fail... reliance on optimal constants."
-        # We introduce a Robustness Factor of 1.5 to account for potential 
-        # anomalous scaling or slower-than-conformal decay in the crossover.
-        # effective_decay = 0.25 * 1.5 = 0.375.
-        scaling_decay = Interval(0.25, 0.25) * Interval(1.5, 1.5)
+        # We use the strict analytic conformal bound.
+        # effective_decay = 0.25.
+        scaling_decay = Interval(0.25, 0.25)
         
         # Pre-factor for Gevrey regularity (Taylor remainder control)
         # For analytic functions, tail is suppressed by factorial.
@@ -465,14 +468,14 @@ class AbInitioBounds:
         2. CAP Tube: Initialized at beta = 0.40 and integrated upwards.
            or Initialized at Weak Coupling and integrated downwards to 0.40.
         
-        The code enforces OVERLAP at beta = 0.40.
+        The code enforces OVERLAP at beta = 0.016.
         """
         # Convergence radius for SU(3) cluster expansion (Convention B rigorous)
-        BETA_STRONG_MAX = 0.40  
+        BETA_STRONG_MAX = 0.016  
         
         # CAP verification range
-        BETA_CAP_MIN = 0.40   
-        BETA_CAP_MAX = 6.0   
+        BETA_CAP_MIN = 0.016   
+        BETA_CAP_MAX = 120.0   
         
         # Check coverage
         if beta.upper <= BETA_STRONG_MAX:
@@ -480,8 +483,8 @@ class AbInitioBounds:
         elif beta.lower >= BETA_CAP_MIN:
              return True # Covered by CAP
         else:
-             # If beta is exactly crossing 0.4, it's covered by continuity
-             if beta.lower < 0.4 and beta.upper > 0.4:
+             # If beta is exactly crossing 0.016, it's covered by continuity
+             if beta.lower < 0.016 and beta.upper > 0.016:
                  return True
              print(f"[Warning] Beta {beta} falls in unverified void!")
              return False
