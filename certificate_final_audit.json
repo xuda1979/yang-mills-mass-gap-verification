@@ -20,7 +20,7 @@
             "status": "PASS"
         }
     },
-    "millennium_conditions": {
+    "axiomatic_conditions": {
         "mass_gap_positivity": true,
         "continuum_limit_existence": true,
         "lsi_uniformity": true
