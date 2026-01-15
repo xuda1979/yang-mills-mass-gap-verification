@@ -267,5 +267,15 @@ class Interval:
             for _ in range(power):
                 res = res * self
             return res
+        elif isinstance(power, float):
+            # x^y = exp(y * ln(x))
+            # defined for x > 0
+            if self.lower <= 0:
+                 raise ValueError(f"Power {power} undefined/complex for interval {self} which may contain non-positive values.")
+            
+            log_val = self.log()
+            # We treat the float power as exact or part of the function definition
+            exponent = log_val * power
+            return exponent.exp()
         else:
-            raise NotImplementedError("Only integer powers supported for Interval arithmetic currently.")
+            raise NotImplementedError("Only int/float powers supported for Interval arithmetic currently.")

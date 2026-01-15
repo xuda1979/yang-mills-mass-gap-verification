@@ -90,16 +90,8 @@ def main():
     # If the covering is empty (mock mode), we must FAIL for the rigorous certificate.
     if not covering_balls:
         print("CRITICAL ERROR: Adaptive covering generation failed.")
-        print("Cannot fall back to coarse mesh for rigorous certification (Audit Item #3).")
-        # In mock/test environment we might proceed, but we flag it clearly.
-        print("Proceeding for DEBUG only - this run is NOT CERTIFIED.")
+        sys.exit(1)
         
-        # Original Fallback (Now marked as Debug only)
-        curr = 0.40
-        while curr <= 6.0:
-            covering_balls.append(type('Ball', (object,), {'beta': curr, 'radius': 0.05})())
-            curr += 0.05
-            
     print(f"  Verifying {len(covering_balls)} intervals covering [0.4, 6.0]...")
 
     for ball in covering_balls:

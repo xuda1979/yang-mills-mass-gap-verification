@@ -77,3 +77,4 @@ The paper uses LaTeX macros like `\VerBetaStrongMax`, `\VerMaxJIrrelevant`, etc.
 *   **Consistency Fix (Jan 14):** The coupling ranges have been unified. The verification establishes a direct handshake at $\beta=0.40$, matching the extended radius of convergence of the Strong Coupling phase.
 *   **Ab Initio Jacobian:** The Jacobian estimator now explicitly uses rigorous remainder bounds for the perturbative expansion, ensuring validity across the crossover regime.
 *   **Auto-Sync:** Paper numerical values are now auto-generated from verification runs, eliminating manual synchronization errors.
+- [x] LSI Constant consistency (`rho`) enforced to conservative `0.28` (Derived Ab Initio) in App B.

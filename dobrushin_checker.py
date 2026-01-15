@@ -170,6 +170,59 @@ class DobrushinChecker:
         
         return alpha
 
+    def check_finite_size_criterion(self, beta: float, L: int) -> bool:
+        """
+        Check if the Finite Size Criterion (FSC) condition is met for a given beta and block size L.
+        This closes the loop for the Strong Coupling Handshake.
+        
+        Args:
+            beta (float): The inverse coupling constant.
+            L (int): Block size.
+            
+        Returns:
+            bool: True if the Dobrushin condition holds (contraction < 1), False otherwise.
+        """
+        # Convert beta to Interval for rigorous checking
+        beta_interval = Interval(beta, beta)
+        
+        # Compute the rigorous interaction norm
+        norm_interval = self.compute_interaction_norm(beta_interval) 
+        
+        # We require contraction < 1
+        # Use upper bound of the interval for safety
+        contraction_upper_bound = norm_interval.upper
+        
+        if contraction_upper_bound < 1.0:
+            return True
+        return False
+
+    def check_finite_size_criterion(self, beta_list):
+        """
+        Checks the Dobrushin condition for a list of betas.
+        Returns a list of betas that pass the condition.
+        
+        This adapts the check for the Full Scale RG Flow loop.
+        """
+        valid_betas = []
+        for beta in beta_list:
+             # Wrap float in Interval if necessary
+             if isinstance(beta, (float, int)):
+                 beta_interval = Interval(float(beta), float(beta))
+             else:
+                 # Assume it acts like an Interval or is one
+                 beta_interval = beta
+             
+             try:
+                 norm = self.compute_interaction_norm(beta_interval)
+                 # We require the upper bound of the norm to be strictly less than 1.0
+                 if norm.upper < 1.0:
+                     valid_betas.append(beta)
+             except Exception as e:
+                 # If check fails (e.g. math domain), it's not valid
+                 print(f"Warning: Dobrushin check error for beta={beta}: {e}")
+                 continue
+                 
+        return valid_betas
 
     def verify_parameter_void_closure(self, beta_min=0.40, beta_max=0.50):
         """
