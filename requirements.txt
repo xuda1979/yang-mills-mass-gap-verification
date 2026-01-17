@@ -1,5 +1,8 @@
-numpy>=1.20.0
-scipy>=1.7.0
-sympy>=1.10.0
-matplotlib>=3.5.0
-h5py>=3.6.0
+# These bounds are intentionally conservative to improve reproducibility.
+# The audit suite is expected to work on newer versions, but pinning avoids
+# subtle numeric/behavior changes across major releases.
+numpy>=1.26,<3
+scipy>=1.10,<2
+sympy>=1.10,<2
+matplotlib>=3.7,<4
+h5py>=3.9,<4

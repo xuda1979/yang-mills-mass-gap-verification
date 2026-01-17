@@ -1,8 +1,15 @@
+import os
+import sys
+import unittest
 
-try:
-    import rigorous_constants_derivation
-    print("Import Successful")
-except Exception as e:
-    print(f"Import Failed: {e}")
-    import traceback
-    traceback.print_exc()
+
+class TestConstantsModule(unittest.TestCase):
+    def test_import_rigorous_constants_derivation(self):
+        here = os.path.dirname(os.path.abspath(__file__))
+        if here not in sys.path:
+            sys.path.insert(0, here)
+        import rigorous_constants_derivation  # noqa: F401
+
+
+if __name__ == "__main__":
+    unittest.main()

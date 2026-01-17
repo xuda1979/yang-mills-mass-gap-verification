@@ -88,10 +88,13 @@ class CharacterExpansion:
         else:
              raise ValueError("beta must be float, int, or Interval")
 
-        # SCALING CORRECTION: 
+        # SCALING CORRECTION (Review Jan 2026): 
         # The Bessel input argument must be scaled to match Group Theory factors.
-        # x_eff = beta / 9.0  (Ensures u ~ beta/18)
-        beta_scaled = beta_int / Interval(9.0, 9.0)
+        # For SU(3) with Wilson Action S = beta * (1 - 1/3 ReTrU), the relevant char expansion
+        # parameter depends on beta/3.
+        # We use x_eff = beta / 3.0 to align with standard literature.
+        # This yields u ~ beta/6, which is more conservative than the previous beta/18.
+        x_eff = beta_scaled = beta_int / Interval(3.0, 3.0)
 
         def I_n_interval(n, z_int):
             val = Interval(0.0, 0.0)

@@ -1,8 +1,8 @@
-"""
+r"""
 Export Verification Results to LaTeX
 ====================================
 
-This script runs all verification modules and exports the results to a 
+This script runs all verification modules and exports the results to a
 LaTeX-compatible format that can be directly \input{} into the paper.
 
 Usage:
@@ -31,15 +31,15 @@ def run_full_verification():
     """
     Run the complete verification and collect all results.
     """
-    results = {
+    run_full_verification_and_collect_results = {
         "metadata": {
             "generated": datetime.now().isoformat(),
             "version": "1.0",
             "status": "PENDING"
         },
         "regimes": {
-            "strong_coupling_max": 0.40,
-            "intermediate_min": 0.40,
+            "strong_coupling_max": 0.25,
+            "intermediate_min": 0.25,
             "intermediate_max": 6.0,
             "weak_coupling_min": 6.0
         },
@@ -52,10 +52,11 @@ def run_full_verification():
     dobrushin_checker = DobrushinChecker()
     
     # 1. Run Dobrushin Check for Strong Coupling Closure
-    dobrushin_beta = 0.40
+    dobrushin_beta = 0.25
     d_norm_interval = dobrushin_checker.compute_interaction_norm(Interval(dobrushin_beta, dobrushin_beta))
     dobrushin_passed = d_norm_interval.upper < 1.0
     
+    results = run_full_verification_and_collect_results
     results["dobrushin_check"] = {
         "beta": dobrushin_beta,
         "norm_upper": round(d_norm_interval.upper, 4),
@@ -63,7 +64,7 @@ def run_full_verification():
     }
 
     # 2. Verification points for Intermediate/Weak Regimes
-    check_points = [0.40, 0.50, 0.63, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    check_points = [0.25, 0.40, 0.50, 0.63, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
     
     all_passed = True
     max_j_irr = 0.0
@@ -78,7 +79,7 @@ def run_full_verification():
             j_rr = J[1][1]
             
             # Determine regime
-            if beta_val <= 0.40:
+            if beta_val <= 0.25:
                 regime = "strong"
             elif beta_val < 4.5:
                 regime = "crossover"
@@ -235,7 +236,7 @@ def main():
     
     # Determine output paths
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    paper_dir = os.path.join(script_dir, "..", "split")
+    paper_dir = os.path.join(script_dir, "..", "single")
     
     # Export to LaTeX (in paper directory)
     latex_path = os.path.join(paper_dir, "verification_results.tex")

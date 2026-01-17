@@ -49,7 +49,19 @@ The verification logic is partitioned into the following modules:
 *   Python 3.8+
 *   No external heavy dependencies.
 
+**Reproducibility note.** The proof logic is designed to be deterministic (interval arithmetic with directed rounding), but Python and scientific packages may change behavior across major versions. The file `requirements.txt` uses conservative upper bounds to reduce drift.
+
 ### Running the Proof Audit
+
+The canonical entrypoint on Windows is:
+
+* `run_full_audit.ps1` (runs environment checks, constant derivation, Phase 2 tube contraction, and Lorentz restoration).
+
+The audit produces/refreshes the paper-facing proof artifacts:
+
+* `rigorous_constants.json`
+* `verification_results.json`
+* `../split/verification_results.tex` (LaTeX macros imported by the paper)
 
 1. **Generate Constants:**
    ```bash
@@ -64,6 +76,14 @@ The verification logic is partitioned into the following modules:
    python export_results_to_latex.py
    ```
    This generates `../split/verification_results.tex` which the paper loads via `\input{verification_results.tex}`.
+
+### One-command contract (recommended)
+
+The repository is considered reproducible if, from a clean checkout:
+
+1. `run_full_audit.ps1` exits with code 0.
+2. `../split/verification_results.tex` exists and contains `\newcommand{\VerStatus}{PASS}`.
+3. The paper compiles and includes the auto-generated values.
 
 ### Paper-Code Synchronization
 

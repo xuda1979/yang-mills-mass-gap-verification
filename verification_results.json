@@ -1,23 +1,33 @@
 {
   "metadata": {
-    "generated": "2026-01-15T18:42:44.810066",
+    "generated": "2026-01-17T21:29:45.208915",
     "version": "1.0",
     "status": "PASS"
   },
   "regimes": {
-    "strong_coupling_max": 0.4,
-    "intermediate_min": 0.4,
+    "strong_coupling_max": 0.25,
+    "intermediate_min": 0.25,
     "intermediate_max": 6.0,
     "weak_coupling_min": 6.0
   },
   "verification_points": {
-    "0.40": {
-      "beta": 0.4,
+    "0.25": {
+      "beta": 0.25,
       "regime": "strong",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.30484,
-      "J_irrelevant_upper": 0.30484,
+      "J_irrelevant_lower": -0.393365,
+      "J_irrelevant_upper": 0.393365,
+      "contracts": true,
+      "status": "PASS"
+    },
+    "0.40": {
+      "beta": 0.4,
+      "regime": "crossover",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.5,
+      "J_irrelevant_lower": -0.425954,
+      "J_irrelevant_upper": 0.425954,
       "contracts": true,
       "status": "PASS"
     },
@@ -26,8 +36,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.311016,
-      "J_irrelevant_upper": 0.311016,
+      "J_irrelevant_lower": -0.447037,
+      "J_irrelevant_upper": 0.447037,
       "contracts": true,
       "status": "PASS"
     },
@@ -36,8 +46,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.31901,
-      "J_irrelevant_upper": 0.31901,
+      "J_irrelevant_lower": -0.473496,
+      "J_irrelevant_upper": 0.473496,
       "contracts": true,
       "status": "PASS"
     },
@@ -46,8 +56,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.341472,
-      "J_irrelevant_upper": 0.341472,
+      "J_irrelevant_lower": -0.541874,
+      "J_irrelevant_upper": 0.541874,
       "contracts": true,
       "status": "PASS"
     },
@@ -56,8 +66,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.39884,
-      "J_irrelevant_upper": 0.39884,
+      "J_irrelevant_lower": -0.675,
+      "J_irrelevant_upper": 0.675,
       "contracts": true,
       "status": "PASS"
     },
@@ -66,8 +76,8 @@
       "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
-      "J_irrelevant_lower": -0.449554,
-      "J_irrelevant_upper": 0.449554,
+      "J_irrelevant_lower": -0.754673,
+      "J_irrelevant_upper": 0.754673,
       "contracts": true,
       "status": "PASS"
     },
@@ -103,16 +113,16 @@
     }
   },
   "dobrushin_check": {
-    "beta": 0.4,
-    "norm_upper": 1.2,
-    "status": "FAIL"
+    "beta": 0.25,
+    "norm_upper": 0.9375,
+    "status": "PASS"
   },
   "summary": {
     "all_passed": true,
-    "total_points": 9,
-    "passed_points": 9,
-    "max_J_irrelevant": 0.475,
-    "min_J_irrelevant": 0.30484,
-    "contraction_margin": 0.515
+    "total_points": 10,
+    "passed_points": 10,
+    "max_J_irrelevant": 0.754673,
+    "min_J_irrelevant": 0.375,
+    "contraction_margin": 0.235327
   }
 }

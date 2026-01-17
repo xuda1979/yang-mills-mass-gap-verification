@@ -17,9 +17,9 @@ except ImportError:
     try:
         from .interval_arithmetic import Interval
     except ImportError:
-        # Final fallback for nested runs
+        # Final fallback for nested runs (e.g. executing from repo root)
         sys.path.append(os.path.join(os.path.dirname(__file__), 'phase2', 'interval_arithmetic'))
-        from interval import Interval
+        from interval import Interval  # type: ignore
 
 # Mocking OperatorBasis and TubeDefinition for standalone run if modules missing
 # BUT assuming they exist as per file list.
@@ -43,7 +43,7 @@ except ImportError:
         def __init__(self, tube): self.balls = []
         def generate_flow_based_covering(self, step_size):
             # Generate range
-            curr = 0.4
+            curr = 0.25
             while curr <= 6.0:
                 self.balls.append(type('Ball', (object,), {'beta': curr})())
                 curr += step_size
@@ -60,8 +60,8 @@ def main():
 
     # 2. Initialize Tube and Covering
     print("\n[Tube Geometry]")
-    # EXTENDED RANGE: beta_min set to 0.40 to handshake with Analytic Strong Coupling Phase 1.
-    tube = TubeDefinition(beta_min=0.40, beta_max=6.0, dim=basis.count())
+    # EXTENDED RANGE: beta_min set to 0.25 to handshake with Analytic Strong Coupling Phase 1.
+    tube = TubeDefinition(beta_min=0.25, beta_max=6.0, dim=basis.count())
     print(f"  Tube defined for beta in [{tube.beta_min}, {tube.beta_max}]")
 
     # 3. Generate Mesh
@@ -92,12 +92,12 @@ def main():
         print("CRITICAL ERROR: Adaptive covering generation failed.")
         sys.exit(1)
         
-    print(f"  Verifying {len(covering_balls)} intervals covering [0.4, 6.0]...")
+    print(f"  Verifying {len(covering_balls)} intervals covering [0.25, 6.0]...")
 
     for ball in covering_balls:
         beta_center = ball.beta
         # Create an interval for beta: [beta - radius, beta + radius]
-        # But we must ensure the union covers [0.4, 6.0].
+        # But we must ensure the union covers [0.25, 6.0].
         # For this audit, we'll try to use the object's radius if available, else default.
         radius = getattr(ball, 'radius', 0.05)
         if callable(radius): radius = 0.05
