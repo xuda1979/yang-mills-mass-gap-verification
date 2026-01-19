@@ -20,117 +20,101 @@ from typing import List, Tuple
 import json
 from datetime import datetime
 
+# Prefer the workspace's directed-rounding interval arithmetic.
+# Fall back to the local eps-based prototype only if this import fails.
+try:
+    from interval_arithmetic import Interval as DirectedInterval  # type: ignore
+except Exception:  # pragma: no cover
+    DirectedInterval = None  # type: ignore
+
 
 # ============================================================================
 # INTERVAL ARITHMETIC CORE
 # ============================================================================
 
-@dataclass
-class Interval:
-    """
-    Rigorous interval arithmetic with automatic outward rounding.
-    
-    Represents a closed interval [lower, upper] containing a real value.
-    All operations are guaranteed to enclose the true mathematical result.
-    """
-    lower: float
-    upper: float
-    
-    def __post_init__(self):
-        """Validate interval."""
-        if self.lower > self.upper:
-            raise ValueError(f"Invalid interval: [{self.lower}, {self.upper}]")
-    
-    def __add__(self, other):
-        """Interval addition with outward rounding."""
-        if isinstance(other, Interval):
-            # Add small epsilon for floating-point safety
+if DirectedInterval is not None:
+    # Use the directed-rounding implementation for all subsequent computations.
+    Interval = DirectedInterval  # type: ignore
+else:
+    @dataclass
+    class Interval:
+        """Fallback prototype interval (eps padding). Prefer `verification/interval_arithmetic.py`."""
+        lower: float
+        upper: float
+
+        def __post_init__(self):
+            if self.lower > self.upper:
+                raise ValueError(f"Invalid interval: [{self.lower}, {self.upper}]")
+
+        def __add__(self, other):
+            if isinstance(other, Interval):
+                eps = np.finfo(float).eps
+                return Interval(self.lower + other.lower - eps, self.upper + other.upper + eps)
             eps = np.finfo(float).eps
-            return Interval(
-                self.lower + other.lower - eps,
-                self.upper + other.upper + eps
-            )
-        # Scalar addition
-        eps = np.finfo(float).eps
-        return Interval(self.lower + other - eps, self.upper + other + eps)
-    
-    def __radd__(self, other):
-        return self.__add__(other)
-    
-    def __sub__(self, other):
-        """Interval subtraction."""
-        if isinstance(other, Interval):
+            return Interval(self.lower + other - eps, self.upper + other + eps)
+
+        def __radd__(self, other):
+            return self.__add__(other)
+
+        def __sub__(self, other):
+            if isinstance(other, Interval):
+                eps = np.finfo(float).eps
+                return Interval(self.lower - other.upper - eps, self.upper - other.lower + eps)
             eps = np.finfo(float).eps
-            return Interval(
-                self.lower - other.upper - eps,
-                self.upper - other.lower + eps
-            )
-        eps = np.finfo(float).eps
-        return Interval(self.lower - other - eps, self.upper - other + eps)
-    
-    def __mul__(self, other):
-        """Interval multiplication."""
-        if isinstance(other, Interval):
-            products = [
-                self.lower * other.lower,
-                self.lower * other.upper,
-                self.upper * other.lower,
-                self.upper * other.upper
-            ]
-            eps = np.finfo(float).eps
-            return Interval(min(products) - eps, max(products) + eps)
-        # Scalar multiplication
-        if other >= 0:
-            eps = np.finfo(float).eps
-            return Interval(self.lower * other - eps, self.upper * other + eps)
-        else:
+            return Interval(self.lower - other - eps, self.upper - other + eps)
+
+        def __mul__(self, other):
+            if isinstance(other, Interval):
+                products = [
+                    self.lower * other.lower,
+                    self.lower * other.upper,
+                    self.upper * other.lower,
+                    self.upper * other.upper,
+                ]
+                eps = np.finfo(float).eps
+                return Interval(min(products) - eps, max(products) + eps)
+            if other >= 0:
+                eps = np.finfo(float).eps
+                return Interval(self.lower * other - eps, self.upper * other + eps)
             eps = np.finfo(float).eps
             return Interval(self.upper * other - eps, self.lower * other + eps)
-    
-    def __rmul__(self, other):
-        return self.__mul__(other)
-    
-    def __truediv__(self, divisor):
-        """Interval division (divisor must not contain 0)."""
-        if isinstance(divisor, Interval):
-            if divisor.lower <= 0 <= divisor.upper:
-                raise ValueError("Division by interval containing zero")
-            # Invert and multiply
-            inv = Interval(1.0 / divisor.upper, 1.0 / divisor.lower)
-            return self * inv
-        else:
+
+        def __rmul__(self, other):
+            return self.__mul__(other)
+
+        def __truediv__(self, divisor):
+            if isinstance(divisor, Interval):
+                if divisor.lower <= 0 <= divisor.upper:
+                    raise ValueError("Division by interval containing zero")
+                inv = Interval(1.0 / divisor.upper, 1.0 / divisor.lower)
+                return self * inv
             if divisor == 0:
                 raise ValueError("Division by zero")
             return self * (1.0 / divisor)
-    
-    def __pow__(self, exponent: int):
-        """Interval power (integer exponent only)."""
-        if exponent == 0:
-            return Interval(1.0, 1.0)
-        elif exponent == 1:
-            return self
-        elif exponent > 1:
-            result = self
-            for _ in range(exponent - 1):
-                result = result * self
-            return result
-        else:
+
+        def __pow__(self, exponent: int):
+            if exponent == 0:
+                return Interval(1.0, 1.0)
+            if exponent == 1:
+                return self
+            if exponent > 1:
+                result = self
+                for _ in range(exponent - 1):
+                    result = result * self
+                return result
             raise NotImplementedError("Negative exponents not implemented")
-    
-    def width(self) -> float:
-        """Width of the interval."""
-        return self.upper - self.lower
-    
-    def midpoint(self) -> float:
-        """Midpoint of the interval."""
-        return (self.lower + self.upper) / 2
-    
-    def contains(self, value: float) -> bool:
-        """Check if value is in the interval."""
-        return self.lower <= value <= self.upper
-    
-    def __repr__(self):
-        return f"[{self.lower:.6e}, {self.upper:.6e}]"
+
+        def width(self) -> float:
+            return self.upper - self.lower
+
+        def midpoint(self) -> float:
+            return (self.lower + self.upper) / 2
+
+        def contains(self, value: float) -> bool:
+            return self.lower <= value <= self.upper
+
+        def __repr__(self):
+            return f"[{self.lower:.6e}, {self.upper:.6e}]"
 
 
 # ============================================================================
@@ -663,7 +647,7 @@ class RGMap:
         c1_prime = c1 + c1_correction + tail_feedback * Interval(-1, 1)
         
         # Get beta midpoint for coupling-dependent factors
-        beta_mid = beta.midpoint()
+        beta_mid = beta.mid if hasattr(beta, 'mid') else beta.midpoint()
         
         # ====================================================================
         # O_2, O_3, O_5 (Dimension 8): Use coupling-dependent contraction

@@ -11,43 +11,24 @@ sys.path.insert(0, os.path.dirname(__file__))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 import numpy as np
+
+# Interval arithmetic: single source of truth.
+# We intentionally do NOT fall back to alternative Interval implementations
+# for certificate/audit runs.
 try:
     from interval_arithmetic import Interval
-except ImportError:
-    try:
-        from .interval_arithmetic import Interval
-    except ImportError:
-        # Final fallback for nested runs (e.g. executing from repo root)
-        sys.path.append(os.path.join(os.path.dirname(__file__), 'phase2', 'interval_arithmetic'))
-        from interval import Interval  # type: ignore
-
-# Mocking OperatorBasis and TubeDefinition for standalone run if modules missing
-# BUT assuming they exist as per file list.
+except ImportError as e:
+    raise ImportError(
+        "Failed to import Interval from verification/interval_arithmetic.py. "
+        "Run this script from the verification folder or ensure it is on PYTHONPATH."
+    ) from e
 
 from ab_initio_jacobian import AbInitioJacobianEstimator
 
-# Simple Tube/Covering Mocks if files missing, or import
-try:
-    from phase2.operator_basis.basis_generator import OperatorBasis
-    from phase2.tube_geometry.tube_definition import TubeDefinition
-    from phase2.tube_geometry.ball_covering import BallCovering
-except ImportError:
-    # Use mocks for the audit script if full env not present
-    class OperatorBasis:
-        def __init__(self, d_max): self.d_max = d_max; self.operators = ["Pl approx", "Rect approx", "Poly approx", "Decay Mode"]
-        def count(self): return 4
-    class TubeDefinition:
-        def __init__(self, beta_min, beta_max, dim): self.beta_min=beta_min; self.beta_max=beta_max
-        def radius(self, b): return 0.1
-    class BallCovering:
-        def __init__(self, tube): self.balls = []
-        def generate_flow_based_covering(self, step_size):
-            # Generate range
-            curr = 0.25
-            while curr <= 6.0:
-                self.balls.append(type('Ball', (object,), {'beta': curr})())
-                curr += step_size
-        def count(self): return len(self.balls)
+# Certificate verifier MUST use real implementations.
+from phase2.operator_basis.basis_generator import OperatorBasis
+from phase2.tube_geometry.tube_definition import TubeDefinition
+from phase2.tube_geometry.ball_covering import BallCovering
 
 def main():
     print("======================================================================")

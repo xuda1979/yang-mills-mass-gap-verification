@@ -163,17 +163,6 @@ class Interval:
             math.nextafter(math.exp(self.lower), -math.inf),
             math.nextafter(math.exp(self.upper), math.inf)
         )
-        
-    def sqrt(self):
-        if self.lower < 0:
-             # Handle partial negative domain by clipping to 0
-             lo = 0.0
-        else:
-             lo = self.lower
-        return Interval(
-            math.nextafter(math.sqrt(lo), -math.inf),
-            math.nextafter(math.sqrt(self.upper), math.inf)
-        )
 
     def lgamma(self):
         if self.lower <= 0:
