@@ -38,7 +38,7 @@ Write-Host ""
 
 # 4. Lorentz Restoration
 Write-Host "[Step 4/4] Verifying Lorentz Invariance Restoration..." -ForegroundColor Yellow
-python verify_lorentz_restoration.py
+python verify_lorentz_restoration_strict.py
 if ($LASTEXITCODE -ne 0) { throw "Lorentz verification failed" }
 Write-Host "Lorentz Trajectory Certified." -ForegroundColor Green
 Write-Host ""

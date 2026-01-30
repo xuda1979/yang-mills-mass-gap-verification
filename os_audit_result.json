@@ -1,0 +1,195 @@
+{
+  "checks": [
+    {
+      "action_spec": {
+        "dimension": 4,
+        "gauge_group": "SU(3)",
+        "name": "wilson_plaquette",
+        "path": "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\action_spec.json",
+        "sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7"
+      },
+      "detail": "action_spec=C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\action_spec.json sha256=c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7",
+      "key": "action_is_wilson_plaquette",
+      "status": "PASS"
+    },
+    {
+      "detail": "Reflection map defined by geometric lattice plane reflection sites",
+      "key": "os_reflection_map_defined",
+      "status": "PASS",
+      "title": "Reflection map and half-space algebra defined"
+    },
+    {
+      "detail": "Need a machine-checkable proof (or formalizable certificate) that the Wilson plaquette action satisfies reflection positivity under the chosen reflection.",
+      "evidence": {
+        "artifact": {
+          "path": "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rp_evidence.json",
+          "schema": "yangmills.rp_evidence.v1",
+          "sha256": "596a82966837aaa4a92b198d1ea54f55ec481c6ebcce6b4a53315bee8996e76d"
+        },
+        "detail": "theorem_boundary_missing_proof_sha256",
+        "evidence": {
+          "action_spec_sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7",
+          "provenance": {
+            "logic": {
+              "coefficients_positivity": "Unitary group character expansion coefficients for fundamental representation are positive.",
+              "conclusion": "Action admits a symmetric transfer matrix with positive eigenvalues.",
+              "decomposition_type": "site_reflection",
+              "positivity_argument": "The Wilson plaquette term Tr(U_p) for temporal plaquettes crossing the plane splits into V V*, where V is the spatial link times the temporal link. Spatial plaquettes factorize strictly into regions.",
+              "reflection_plane": "temporal_link_midpoint"
+            },
+            "method": "algebraic_structure_verification",
+            "script": "verification/math_rp_proof.py",
+            "source": "repo_math_proof"
+          },
+          "reflection": {
+            "axis": "time",
+            "plane": "x0=1/2",
+            "type": "site_reflection"
+          }
+        },
+        "key": "rp_evidence_present",
+        "status": "CONDITIONAL",
+        "title": "Reflection positivity evidence artifact"
+      },
+      "key": "os_rp_lattice_proved",
+      "status": "CONDITIONAL",
+      "title": "Lattice reflection positivity proved for the pinned action"
+    },
+    {
+      "detail": "Need proof that the limiting Schwinger functions are (at least) translation + rotation invariant.",
+      "key": "os_euclidean_invariance_limit",
+      "status": "CONDITIONAL",
+      "title": "Euclidean invariance in the limit"
+    },
+    {
+      "detail": "Need symmetry under permutations and suitable continuity/temperedness bounds.",
+      "key": "os_symmetry_and_regularities",
+      "status": "CONDITIONAL",
+      "title": "Symmetry and regularity axioms"
+    },
+    {
+      "detail": "Need a verified clustering property to obtain uniqueness of the vacuum and a sharp spectral interpretation.",
+      "key": "os_cluster_property",
+      "status": "CONDITIONAL",
+      "title": "Clustering / ergodicity"
+    },
+    {
+      "detail": "Need a fully explicit chain from verified OS axioms to construction of Hilbert space, vacuum, and Hamiltonian; not merely citing the theorem.",
+      "evidence": {
+        "artifact": {
+          "path": "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\os_reconstruction_evidence.json",
+          "schema": "yangmills.os_reconstruction_evidence.v1",
+          "sha256": "73095016690c485a274123185ac3885782772522291e598fbe6b6cd7332fca8d"
+        },
+        "detail": "theorem_boundary_missing_proof_sha256",
+        "evidence": {
+          "action_spec_sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7",
+          "axioms": {
+            "clustering": true,
+            "euclidean_invariance": true,
+            "reflection_positivity": true,
+            "regularity": true,
+            "symmetry": true
+          },
+          "provenance": {
+            "source": "Generated based on verified Schwinger limit evidence."
+          },
+          "reconstruction": {
+            "invoked": true,
+            "output": {
+              "hamiltonian": "Self-adjoint generator of time translations U(t), proven strictly positive gap.",
+              "hilbert_space": "Constructively defined as L2 completion of polynomial algebra quotient (GNS-like).",
+              "vacuum": "Unique cyclic vector Omega."
+            }
+          },
+          "schwinger_functions": {
+            "description": "Limiting Schwinger functions confirmed by Balaban stability and Schwinger limit verification.",
+            "kind": "gauge_invariant_schwinger",
+            "n_point_max": 256
+          }
+        },
+        "key": "os_reconstruction_evidence_present",
+        "status": "CONDITIONAL",
+        "title": "OS reconstruction evidence artifact"
+      },
+      "key": "os_reconstruction_invoked_constructively",
+      "status": "CONDITIONAL",
+      "title": "OS reconstruction invoked with verified inputs"
+    },
+    {
+      "artifact": {
+        "path": "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rp_evidence.json",
+        "schema": "yangmills.rp_evidence.v1",
+        "sha256": "596a82966837aaa4a92b198d1ea54f55ec481c6ebcce6b4a53315bee8996e76d"
+      },
+      "detail": "theorem_boundary_missing_proof_sha256",
+      "evidence": {
+        "action_spec_sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7",
+        "provenance": {
+          "logic": {
+            "coefficients_positivity": "Unitary group character expansion coefficients for fundamental representation are positive.",
+            "conclusion": "Action admits a symmetric transfer matrix with positive eigenvalues.",
+            "decomposition_type": "site_reflection",
+            "positivity_argument": "The Wilson plaquette term Tr(U_p) for temporal plaquettes crossing the plane splits into V V*, where V is the spatial link times the temporal link. Spatial plaquettes factorize strictly into regions.",
+            "reflection_plane": "temporal_link_midpoint"
+          },
+          "method": "algebraic_structure_verification",
+          "script": "verification/math_rp_proof.py",
+          "source": "repo_math_proof"
+        },
+        "reflection": {
+          "axis": "time",
+          "plane": "x0=1/2",
+          "type": "site_reflection"
+        }
+      },
+      "key": "rp_evidence_present",
+      "status": "CONDITIONAL",
+      "title": "Reflection positivity evidence artifact"
+    },
+    {
+      "artifact": {
+        "path": "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\os_reconstruction_evidence.json",
+        "schema": "yangmills.os_reconstruction_evidence.v1",
+        "sha256": "73095016690c485a274123185ac3885782772522291e598fbe6b6cd7332fca8d"
+      },
+      "detail": "theorem_boundary_missing_proof_sha256",
+      "evidence": {
+        "action_spec_sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7",
+        "axioms": {
+          "clustering": true,
+          "euclidean_invariance": true,
+          "reflection_positivity": true,
+          "regularity": true,
+          "symmetry": true
+        },
+        "provenance": {
+          "source": "Generated based on verified Schwinger limit evidence."
+        },
+        "reconstruction": {
+          "invoked": true,
+          "output": {
+            "hamiltonian": "Self-adjoint generator of time translations U(t), proven strictly positive gap.",
+            "hilbert_space": "Constructively defined as L2 completion of polynomial algebra quotient (GNS-like).",
+            "vacuum": "Unique cyclic vector Omega."
+          }
+        },
+        "schwinger_functions": {
+          "description": "Limiting Schwinger functions confirmed by Balaban stability and Schwinger limit verification.",
+          "kind": "gauge_invariant_schwinger",
+          "n_point_max": 256
+        }
+      },
+      "key": "os_reconstruction_evidence_present",
+      "status": "CONDITIONAL",
+      "title": "OS reconstruction evidence artifact"
+    }
+  ],
+  "claim": "ASSUMPTION-BASED",
+  "clay_standard": false,
+  "generated_utc": "2026-01-29T17:59:04.887760Z",
+  "ok": false,
+  "reason": "strict_mode_disallows_conditional",
+  "status": "FAIL",
+  "strict": true
+}

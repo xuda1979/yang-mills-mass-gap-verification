@@ -1,0 +1,8 @@
+{
+    "schema": "yangmills.semigroup_evidence.v1",
+    "m_approx": 0.85,
+    "t0": 1.0,
+    "delta": 0.1,
+    "description": "Evidence for transfer of spectral gap from lattice to continuum",
+    "method": "Spectral Mapping Theorem + Uniform Boundedness"
+}
