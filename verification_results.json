@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "generated": "2026-01-29T23:48:47.051720",
+    "generated": "2026-02-04T11:39:46.830402",
     "version": "1.0",
-    "status": "PASS"
+    "status": "CONDITIONAL"
   },
   "regimes": {
     "strong_coupling_max": 0.25,
@@ -86,8 +86,8 @@
       "regime": "crossover",
       "J_marginal_lower": 1.072425,
       "J_marginal_upper": 1.072425,
-      "J_irrelevant_lower": 0.175,
-      "J_irrelevant_upper": 0.325,
+      "J_irrelevant_lower": 0.174009,
+      "J_irrelevant_upper": 0.325991,
       "contracts": true,
       "status": "PASS"
     },
@@ -96,8 +96,8 @@
       "regime": "weak",
       "J_marginal_lower": 1.05794,
       "J_marginal_upper": 1.05794,
-      "J_irrelevant_lower": 0.19,
-      "J_irrelevant_upper": 0.31,
+      "J_irrelevant_lower": 0.189207,
+      "J_irrelevant_upper": 0.310793,
       "contracts": true,
       "status": "PASS"
     },
@@ -106,8 +106,8 @@
       "regime": "weak",
       "J_marginal_lower": 1.048283,
       "J_marginal_upper": 1.048283,
-      "J_irrelevant_lower": 0.2,
-      "J_irrelevant_upper": 0.3,
+      "J_irrelevant_lower": 0.199339,
+      "J_irrelevant_upper": 0.300661,
       "contracts": true,
       "status": "PASS"
     }
@@ -122,7 +122,7 @@
     "total_points": 10,
     "passed_points": 10,
     "max_J_irrelevant": 0.754673,
-    "min_J_irrelevant": 0.3,
+    "min_J_irrelevant": 0.300661,
     "contraction_margin": 0.235327
   },
   "pollution_check": {

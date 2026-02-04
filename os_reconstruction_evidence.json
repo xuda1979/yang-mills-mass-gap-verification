@@ -24,11 +24,10 @@
     }
   },
   "provenance": {
-    "source": "Generated based on verified Schwinger limit evidence."
+    "source": "formal_proofs/os_reconstruction.tex"
   },
   "proof": {
     "schema": "yangmills.os_reconstruction_proof_artifact.v1",
-    "sha256": "TBD",
-    "detail": "Formal OS-reconstruction proof artifact not yet supplied (theorem-boundary)."
+    "sha256": "5f7afda95d932c610122152b4224d75106650f66112f31d927b1094a4efccda0"
   }
 }

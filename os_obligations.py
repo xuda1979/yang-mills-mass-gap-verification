@@ -41,22 +41,39 @@ def os_obligations() -> List[Dict[str, Any]]:
         from .os_reconstruction_evidence import audit_os_reconstruction_evidence
 
     rp_ev = audit_rp_evidence()
-    rp_ok = bool(rp_ev.get("status") == "PASS")
 
     os_ev = audit_os_reconstruction_evidence()
-    # Check granular flags in the OS evidence structure
-    # os_ev returns a dict with 'status', 'reason' etc, but also the raw 'doc'
-    # We might need to inspect the 'doc' or parsed fields if audit provides them.
-    # Looking at audit_os_reconstruction_evidence (we assume it returns the doc if valid)
-    
-    # Let's assume os_ev contains 'status'="PASS" if the artifact is valid.
-    os_valid = bool(os_ev.get("status") == "PASS")
-    
-    # We can infer specific flags if the artifact is valid and claims them
-    has_euclid = os_valid  # Simplified: if artifact passes, we trust its assertions
-    has_sym = os_valid
-    has_cluster = os_valid
-    has_map = True # Standard lattice reflection
+
+    # IMPORTANT: this module is an obligations *registry*. It must not silently
+    # upgrade obligations to PASS just because an evidence artifact exists.
+    # Until the repo provides a machine-checkable proof artifact (hash-pinned),
+    # `audit_os_reconstruction_evidence()` should remain CONDITIONAL and these
+    # obligations should remain CONDITIONAL.
+
+    # IMPORTANT: default repo mode must remain theorem-boundary unless a
+    # Clay-certified proof status explicitly enables upgrading.
+    try:
+        import json, os
+
+        _ps_path = os.path.join(os.path.dirname(__file__), "proof_status.json")
+        with open(_ps_path, "r", encoding="utf-8") as f:
+            _ps = json.load(f)
+        _clay = bool((_ps or {}).get("clay_standard"))
+    except Exception:
+        _clay = False
+
+    rp_ok = bool(_clay and rp_ev.get("status") == "PASS")
+    os_valid = bool(_clay and os_ev.get("status") == "PASS")
+
+    # Only the reflection map definition is treated as concretely specified by
+    # the lattice geometry (still not a full RP proof).
+    has_map = True
+
+    # The remaining OS axioms are checked from the evidence.
+    axioms = os_ev.get("evidence", {}).get("axioms", {})
+    has_euclid = bool(axioms.get("euclidean_invariance")) and os_valid
+    has_sym = bool(axioms.get("symmetry") and axioms.get("regularity")) and os_valid
+    has_cluster = bool(axioms.get("clustering")) and os_valid
 
     # These are scoped to Euclidean OS axioms + RP sufficient to reconstruct
     # a Hilbert space and a self-adjoint Hamiltonian from limiting Schwinger

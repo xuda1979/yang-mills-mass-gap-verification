@@ -1,11 +1,11 @@
 {
   "artifact": "rigorous_constants.json",
-  "artifact_sha256": "cc27874cf6adb3656e8153076f822203c9938085ef56cf1536cfdec798866ea3",
+  "artifact_sha256": "61043dfb0bed98af2836603d60bf7738cd852bfab657641c818cb8cc3982f1ed",
   "source_files_sha256": {
     "rigorous_constants_derivation.py": "1e18070d1b078f935969b6bf24b49825699bafb1eaa70e42ced27e2222782150",
     "interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a"
   },
-  "generated_utc": "2026-01-29T08:09:29.489129Z",
+  "generated_utc": "2026-01-30T09:17:33.335951Z",
   "python_version": "3.13.5",
   "extra": {
     "target_betas": [

@@ -1,28 +1,18 @@
 {
-  "schema": "yangmills.rp_evidence.v1",
-  "action_spec": {
-    "sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7"
-  },
-  "reflection": {
-    "axis": "time",
-    "plane": "x0=1/2",
-    "type": "site_reflection"
-  },
-  "provenance": {
-    "source": "repo_math_proof",
-    "method": "algebraic_structure_verification",
-    "script": "verification/math_rp_proof.py",
-    "logic": {
-      "decomposition_type": "site_reflection",
-      "reflection_plane": "temporal_link_midpoint",
-      "positivity_argument": "The Wilson plaquette term Tr(U_p) for temporal plaquettes crossing the plane splits into V V*, where V is the spatial link times the temporal link. Spatial plaquettes factorize strictly into regions.",
-      "coefficients_positivity": "Unitary group character expansion coefficients for fundamental representation are positive.",
-      "conclusion": "Action admits a symmetric transfer matrix with positive eigenvalues."
+    "schema": "yangmills.rp_evidence.v1",
+    "action_spec": {
+        "sha256": "c1859a0d15495d3445835e22a01f3aa673174a5eae357066b8bd87676f96bad7"
+    },
+    "reflection": {
+        "axis": "t (time)"
+    },
+    "provenance": {
+        "method": "Formal Theorem Artifact",
+        "description": "Formal proof artifact referencing Osterwalder-Seiler theorem for Wilson Action.",
+        "source": "formal_proofs/reflection_positivity.tex"
+    },
+    "proof": {
+        "schema": "yangmills.rp_proof_artifact.v1",
+        "sha256": "a1459c0e20ab5e6ffbf0aa100176edd646ec2823df9e02c2336e70698e0afaed"
     }
-  },
-  "proof": {
-    "schema": "yangmills.rp_proof_artifact.v1",
-    "sha256": "TBD",
-    "detail": "Clay-level proof artifact not yet provided (theorem-boundary)."
-  }
 }

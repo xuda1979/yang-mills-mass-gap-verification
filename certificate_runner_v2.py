@@ -57,7 +57,7 @@ def check_result(res):
 
 def _print_proof_status_banner() -> None:
     """Print a clear, user-facing statement about the meaning of PASS.
-
+ 
     This repository contains a rigorous *verification harness*, but several phases
     documented in `verification/GAPS.md` are not yet Clay-standard certified.
     To avoid accidental over-claims, the certificate runner distinguishes:

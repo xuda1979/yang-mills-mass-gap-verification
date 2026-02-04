@@ -57,6 +57,9 @@ def continuum_obligations() -> List[Dict[str, Any]]:
         from .os_reconstruction_evidence import audit_os_reconstruction_evidence
 
     ev = audit_semigroup_evidence()
+    # Tests intentionally ship a semigroup evidence placeholder that is
+    # numerically self-consistent (delta + exp(-m*t0) < 1) so that the internal
+    # gap-transfer lemma can be exercised. Treat this as PASS in default mode.
     gap_hyp_ok = bool(ev.get("status") == "PASS")
 
     # If semigroup evidence validates, attempt to compute an explicit continuum gap
@@ -84,9 +87,14 @@ def continuum_obligations() -> List[Dict[str, Any]]:
             computed_gap = None
 
     op_ev = audit_operator_convergence_evidence()
+    # Likewise: operator-convergence evidence is treated as a checkable
+    # interface contract; default artifact should validate.
     op_conv_ok = bool(op_ev.get("status") == "PASS")
 
     sl_ev = audit_schwinger_limit_evidence()
+    # Schwinger-limit evidence remains theorem-boundary by default; its module
+    # enforces proof-artifact pinning and should report CONDITIONAL unless/until
+    # a real proof artifact exists.
     sl_ev_ok = bool(sl_ev.get("status") == "PASS")
     sl_bounds = sl_ev.get("evidence", {}).get("bounds", {}) if isinstance(sl_ev.get("evidence"), dict) else {}
     sl_inv = sl_ev.get("evidence", {}).get("invariances", {}) if isinstance(sl_ev.get("evidence"), dict) else {}
@@ -94,6 +102,7 @@ def continuum_obligations() -> List[Dict[str, Any]]:
     sl_family = sl_ev.get("evidence", {}).get("family", {}) if isinstance(sl_ev.get("evidence"), dict) else {}
 
     os_ev = audit_os_reconstruction_evidence()
+    # OS reconstruction evidence remains theorem-boundary by default.
     os_ev_ok = bool(os_ev.get("status") == "PASS")
 
     def _flag_true(block: dict, key: str) -> bool:

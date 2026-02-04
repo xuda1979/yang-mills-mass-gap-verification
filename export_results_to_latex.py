@@ -358,11 +358,15 @@ def export_to_latex(results, output_path):
     except Exception:
         continuum_audit = None
 
+    # IMPORTANT: The header status must match the machine-readable macro \VerStatus.
+    # We take it from results['metadata']['status'] at write-time so it cannot drift.
+    header_status = str(results.get("metadata", {}).get("status", "UNKNOWN"))
+
     lines = [
         "% =============================================================================",
         "% AUTO-GENERATED FILE - DO NOT EDIT MANUALLY",
         f"% Generated: {results['metadata']['generated']}",
-        f"% Status: {results['metadata']['status']}",
+        f"% Status: {header_status}",
         "% =============================================================================",
         "",
         "% Guard against multiple inclusion",

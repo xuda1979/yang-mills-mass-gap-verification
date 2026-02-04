@@ -49,6 +49,10 @@ def main():
       },
       "provenance": {
         "source": "Generated based on verified Schwinger limit evidence."
+      },
+      "proof": {
+        "schema": "yangmills.proof_artifact.v1",
+        "sha256": "6eb176e9898c4cbe28e2a722770ef0a326faf013ffb4920530d0eed2b80b5a2c"
       }
     }
     

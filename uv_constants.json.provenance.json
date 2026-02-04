@@ -1,16 +1,16 @@
 {
   "artifact": "uv_constants.json",
-  "artifact_sha256": "c11cb8110dea708a05cb7d2486ec49af4614ce4b129c224c15af1dade10b26c1",
+  "artifact_sha256": "6caad35cb80180d87a5ab66ca91e0a6877ba25b60d73da6e3aa2a549300e1e4f",
   "source_files_sha256": {
-    "c:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_constants_derivation.py": "8f0e9ec6166392f0b9181d3b9d2d8574cf0f4d47ec029aecc2e2760c9306fb01",
-    "c:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
-    "c:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\provenance.py": "893a6ec7c8890c67fa86109c5a0550514379fe91b1c91c721ed7da8a4a735822"
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_constants_derivation.py": "9a79ce9c0a47a4ff8dac3505714ab767c411cd2af98bfedeba19fc0a184c6231",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\provenance.py": "893a6ec7c8890c67fa86109c5a0550514379fe91b1c91c721ed7da8a4a735822"
   },
-  "generated_utc": "2026-01-28T07:32:55.004148Z",
+  "generated_utc": "2026-01-31T17:28:51.052306Z",
   "python_version": "3.13.5",
   "extra": {
     "kind": "uv_constants",
-    "proof_claim": "CONSTRUCTIVE-CANDIDATE",
+    "proof_claim": "ASSUMPTION-BASED",
     "clay_standard": false
   }
 }

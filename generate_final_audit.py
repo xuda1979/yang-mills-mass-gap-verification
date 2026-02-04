@@ -119,7 +119,6 @@ def generate_final_audit() -> Dict[str, Any]:
             },
         },
     }
-
     return cert
 
 
