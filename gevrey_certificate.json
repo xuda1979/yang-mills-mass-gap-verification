@@ -1,0 +1,36 @@
+{
+  "schema": "yangmills.gevrey_certificate.v1",
+  "ok": true,
+  "contraction_factor": 0.5212620027004874,
+  "tail_norm_bound": 0.000688508155994826,
+  "C_final": 0.0008476124882067565,
+  "n_steps_verified": 100,
+  "reason": "gevrey_tail_controlled",
+  "initial_envelope": {
+    "ok": true,
+    "C_initial": {
+      "lower": 1.2575519103853008,
+      "upper": 1.2575519103853077
+    },
+    "R_initial": {
+      "lower": 0.07957747154594759,
+      "upper": 0.07957747154594773
+    },
+    "cluster_ratio": {
+      "lower": 0.557042300821633,
+      "upper": 0.5570423008216342
+    },
+    "beta": 6.0,
+    "g_sq": {
+      "lower": 0.9999999999999999,
+      "upper": 1.0000000000000002
+    }
+  },
+  "parameters": {
+    "beta_start": 6.0,
+    "n_steps": 100,
+    "gevrey_index": 1.0,
+    "block_scale": 2.0,
+    "dimension": 4
+  }
+}

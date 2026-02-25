@@ -12,12 +12,11 @@ def calculate_sha256(path):
 def main():
     base_dir = os.path.dirname(__file__)
     
-    # 1. Ensure proof artifact exists
+    # 1. Verify proof artifact exists
     proof_path = os.path.join(base_dir, "formal_proofs", "rp_proof.txt")
-    os.makedirs(os.path.dirname(proof_path), exist_ok=True)
-    with open(proof_path, "w") as f:
-        f.write("Reflection Positivity Verified by Grand Verification Pipeline.\n")
-        f.write("Date: 2026-01-30\n")
+    if not os.path.exists(proof_path):
+        print(f"[ERROR] Proof artifact not found: {proof_path}")
+        return
     
     proof_sha = calculate_sha256(proof_path)
     
@@ -25,7 +24,7 @@ def main():
     action_spec_path = os.path.join(base_dir, "action_spec.json")
     action_sha = calculate_sha256(action_spec_path)
     
-    # 3. Create evidence JSON
+    # 3. Create evidence JSON with proper proof artifact binding
     evidence = {
         "schema": "yangmills.rp_evidence.v1",
         "action_spec": {
@@ -35,10 +34,16 @@ def main():
             "axis": "t (time)"
         },
         "provenance": {
-            "method": "Grand Verification Pipeline",
+            "method": "Character expansion (Osterwalder-Seiler 1978)",
             "proof_artifact_sha256": proof_sha,
-            "description": "Verified by constructive pipeline.",
-            "source": "Constructive Field Theory (Glimm/Jaffe) + Grand Verification Pipeline"
+            "description": "Reflection positivity proved via character expansion of Wilson plaquette action. "
+                           "Positivity of character expansion coefficients c_R(beta) > 0 and orthogonality "
+                           "of characters under Haar integration yield <(Theta A) A> >= 0.",
+            "source": "formal_proofs/rp_proof.txt"
+        },
+        "proof": {
+            "schema": "yangmills.rp_proof_artifact.v1",
+            "sha256": proof_sha
         }
     }
     

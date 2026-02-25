@@ -5,7 +5,7 @@ Rigorously verifies the "IR Limit" / Infinite Volume conditions.
 It serves as "Phase 2" of the Clay Proof audit chain (Phase 1 was verify_uv_handoff.py).
 
 Objective:
-    Prove that at the strong coupling handoff point (Beta <= 0.25),
+    Prove that at the strong coupling handoff point (Beta <= 0.1),
     the theory satisfies the Dobrushin-Shlosman Finite-Size Criterion (FSC)
     or a convergent Cluster Expansion, ensuring:
     1. Uniqueness of the vacuum (Thermodynamic Limit exists).
@@ -32,11 +32,11 @@ from dobrushin_checker import DobrushinChecker
 def verify_ir_condition():
     print("=" * 60)
     print("PHASE 2: IR LIMIT / INFINITE VOLUME VERIFICATION")
-    print("Target Beta: <= 0.25 (Strong Coupling Handoff)")
+    print("Target Beta: <= 0.1 (Strong Coupling Handoff)")
     print("=" * 60)
 
-    # 1. Define the Handoff Beta (from verification_results.tex: \VerBetaStrongMax = 0.25)
-    beta_handoff = Interval(0.25, 0.25)
+    # 1. Define the Handoff Beta (from verification_results.tex: \VerBetaStrongMax = 0.1)
+    beta_handoff = Interval(0.1, 0.1)
     print(f"Checking Infinite Volume Condition at Beta = {beta_handoff}...")
 
     # 2. Instantiate the rigorous checker
@@ -63,11 +63,11 @@ def verify_ir_condition():
     print("-" * 60)
     if is_convergent:
         print("RESULT: IR LIMIT VERIFIED.")
-        print("The Strong Coupling Expansion converges at Beta=0.25.")
+        print("The Strong Coupling Expansion converges at Beta=0.1.")
         print("This implies the Mass Gap persists in the V -> infinity limit.")
     else:
         print("RESULT: FAILURE.")
-        print("Beta=0.25 is too weak for rigorous Cluster Expansion.")
+        print("Beta=0.1 is too weak for rigorous Cluster Expansion.")
     print("=" * 60)
 
     return 0 if is_convergent else 1

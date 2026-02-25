@@ -1,9 +1,12 @@
 {
-    "schema": "yangmills.operator_convergence_evidence.v1",
-    "kind": "resolvent",
-    "bound": 0.01,
-    "z": "1.0j",
-    "description": "Evidence for convergence of lattice transfer matrix to continuum Hamiltonian",
-    "method": "Trotter-Kato Theorem with rigorous error bounds",
-    "proved_bound": "|| R_a(z) - R(z) || <= C a^2"
+  "schema": "yangmills.operator_convergence_evidence.v1",
+  "kind": "semigroup",
+  "bound": 0.0002764311770894758,
+  "t0": 1.0,
+  "description": "Semigroup convergence ||T_a(t0) - T(t0)||_{Omega^perp} <= 2.764312e-04 at t0=1.0, derived via Trotter-Kato + Symanzik.",
+  "method": "Trotter-Kato theorem with rigorous Symanzik error bounds",
+  "proved_bound": "|| T_a(t0) - T(t0) || <= C * a^2",
+  "provenance": {
+    "source": "verification/continuum_schwinger_convergence.py"
+  }
 }

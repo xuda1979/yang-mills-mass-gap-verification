@@ -1,8 +1,15 @@
 {
-    "schema": "yangmills.semigroup_evidence.v1",
-    "m_approx": 0.85,
-    "t0": 1.0,
-    "delta": 0.1,
-    "description": "Evidence for transfer of spectral gap from lattice to continuum",
-    "method": "Spectral Mapping Theorem + Uniform Boundedness"
+  "schema": "yangmills.semigroup_evidence.v1",
+  "m_approx": 0.0005530152389223558,
+  "t0": 1.0,
+  "delta": 0.0002764311770894758,
+  "notes": [
+    "m_approx derived from rigorous_constants.json (worst-case LSI lower bound).",
+    "delta=2.764312e-04 derived constructively via Trotter-Kato + Symanzik improvement.",
+    "Convergence rate: delta ~ C * a^2.0."
+  ],
+  "provenance": {
+    "source": "verification/continuum_schwinger_convergence.py",
+    "derivation": "Constructive: Trotter-Kato theorem with explicit Symanzik error bounds"
+  }
 }

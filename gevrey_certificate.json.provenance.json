@@ -1,0 +1,14 @@
+{
+  "artifact": "gevrey_certificate.json",
+  "artifact_sha256": "d481b256c9cf486b627afde2ebc5e4f3d4272c63333189482544fd51979657e3",
+  "source_files_sha256": {
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\gevrey_tail_control.py": "f7fe03975aa1eee6214adb24ca81b4609e7ccd734567d0df655f1f33707c55a5",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a"
+  },
+  "generated_utc": "2026-02-24T13:52:41.899711Z",
+  "python_version": "3.13.5",
+  "extra": {
+    "kind": "gevrey_certificate",
+    "ok": true
+  }
+}

@@ -52,8 +52,8 @@ def run_full_verification():
             "status": "PENDING"
         },
         "regimes": {
-            "strong_coupling_max": 0.25,
-            "intermediate_min": 0.25,
+            "strong_coupling_max": 0.1,
+            "intermediate_min": 0.1,
             "intermediate_max": 6.0,
             "weak_coupling_min": 6.0
         },
@@ -66,7 +66,7 @@ def run_full_verification():
     dobrushin_checker = DobrushinChecker()
     
     # 1. Run Dobrushin Check for Strong Coupling Closure
-    dobrushin_beta = 0.25
+    dobrushin_beta = 0.1
     d_norm_interval = dobrushin_checker.compute_interaction_norm(Interval(dobrushin_beta, dobrushin_beta))
     dobrushin_passed = d_norm_interval.upper < 1.0
     
@@ -102,9 +102,9 @@ def run_full_verification():
 
     # 1d. Interval-Uniform Verification (The "No Gaps" Certificate)
     # Instead of just checking points, we traverse a rigorous covering of the
-    # entire intermediate regime [0.25, 6.0].
+    # entire intermediate regime [0.1, 6.0].
     results["interval_check"] = {
-        "covered_min": 0.25,
+        "covered_min": 0.1,
         "covered_max": 6.0,
         "ball_count": 0,
         "max_J_irr_continuous": 0.0,
@@ -116,7 +116,7 @@ def run_full_verification():
         
         # 1. Initialize Basis and Tube (real physics models)
         basis = OperatorBasis(d_max=6)
-        tube = TubeDefinition(beta_min=0.25, beta_max=6.0, dim=basis.count())
+        tube = TubeDefinition(beta_min=0.1, beta_max=6.0, dim=basis.count())
         
         covering = BallCovering(tube)
         # Use a safe step size for the covering generation
@@ -145,7 +145,7 @@ def run_full_verification():
                 print(f"  FAIL at interval near beta={ball.beta:.3f}: J_bound={j_irr_upper:.4f}")
 
         results["interval_check"] = {
-            "covered_min": 0.25,
+            "covered_min": 0.1,
             "covered_max": 6.0,
             "ball_count": len(balls),
             "max_J_irr_continuous": round(max_j_continuous, 4),
@@ -155,7 +155,7 @@ def run_full_verification():
               f"(Balls: {len(balls)}, Max J: {max_j_continuous:.4f})")
     
     # 2. Verification points for Intermediate/Weak Regimes
-    check_points = [0.25, 0.40, 0.50, 0.63, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+    check_points = [0.1, 0.25, 0.40, 0.50, 0.63, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
     
     all_passed = True
     max_j_irr = 0.0
@@ -178,7 +178,7 @@ def run_full_verification():
             j_rr = J[1][1]
             
             # Determine regime
-            if beta_val <= 0.25:
+            if beta_val <= 0.1:
                 regime = "strong"
             elif beta_val < 4.5:
                 regime = "crossover"
@@ -516,9 +516,9 @@ def main():
     print("=" * 70)
     
     if results['metadata']['status'] == 'PASS':
-        print("\n✓ Paper can now use \\input{verification_results.tex} to load all values.")
+        print("\n[OK] Paper can now use \\input{verification_results.tex} to load all values.")
     else:
-        print("\n✗ Verification FAILED. Fix issues before updating paper.")
+        print("\n[FAIL] Verification FAILED. Fix issues before updating paper.")
     
     return 0 if results['metadata']['status'] == 'PASS' else 1
 

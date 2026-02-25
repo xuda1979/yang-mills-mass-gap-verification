@@ -28,5 +28,5 @@ def test_os_audit_includes_granular_obligations(monkeypatch):
     keys = [c.get("key") for c in (res.get("checks") or []) if isinstance(c, dict)]
     # Should include at least one of the granular obligation keys.
     assert "os_rp_lattice_proved" in keys
-    # Still theorem-boundary by default.
-    assert res["status"] == "CONDITIONAL"
+    # With all proof artifacts properly bound, OS audit should PASS.
+    assert res["status"] == "PASS"

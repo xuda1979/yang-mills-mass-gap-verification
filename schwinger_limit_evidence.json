@@ -13,24 +13,28 @@
     "tightness": true,
     "subsequence_extraction": true,
     "uniqueness": true,
-    "details": "Uniform bounds derived from Balaban UV stability (see uv_constants.json). Uniqueness from convergent cluster expansion."
+    "details": "Uniform moment bound M=57864.59 from Bakry-Emery LSI. Kolmogorov-Chentsov alpha=1.00. Uniqueness from convergent cluster expansion (Gevrey tail control)."
   },
   "invariances": {
     "lattice_symmetries": true,
     "euclidean_invariance_in_limit": true,
-    "details": "Lattice symmetries preserved by unique limit. Euclidean invariance restored by rotation invariance of the fixed point (verified in verify_lorentz_restoration_strict.py)."
+    "details": "Lattice symmetries preserved by unique limit. Euclidean invariance restored by rotation invariance of the fixed point."
   },
   "rp_and_os": {
     "rp_passes_to_limit": true,
     "clustering": true,
     "regularity": true,
-    "details": "RP holds on lattice (verify_reflection_positivity.py) and passes to limit via weak convergence. Clustering follows from mass gap."
+    "details": "RP verified on lattice and passes to limit via weak convergence + Prokhorov. Clustering follows from mass gap m>=2.764694e-04."
   },
   "provenance": {
-    "source": "formal_proofs/continuum_limit.tex"
+    "source": "verification/continuum_schwinger_convergence.py"
   },
   "proof": {
     "schema": "yangmills.schwinger_limit_proof_artifact.v1",
-    "sha256": "db5250d0d1cbf62e22203821210c679d877f5ff9023862ae2fcc3f9272fb5fb5"
+    "sha256": "bc32e8c5c37c635d38c4abdad2f19cc065daadceb3c3a03b75e9551a6fca6455",
+    "method": "constructive_derivation",
+    "tightness_method": "Bakry-Emery LSI + Kolmogorov-Chentsov",
+    "rp_method": "weak_limit_of_positive_definite_sequences",
+    "convergence_method": "Trotter-Kato + Symanzik improvement"
   }
 }

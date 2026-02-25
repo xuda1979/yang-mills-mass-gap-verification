@@ -66,6 +66,11 @@ def _artifact_specs() -> List[Dict[str, object]]:
             "extra": {"kind": "results"},
         },
         {
+            "path": os.path.join(base, "mass_gap_certificate.json"),
+            "sources": common_sources + [os.path.join(base, "verify_gap_rigorous.py")],
+            "extra": {"kind": "certificate", "phase": "mass_gap"},
+        },
+        {
             "path": os.path.join(base, "certificate_phase1.json"),
             "sources": common_sources + [os.path.join(base, "tube_verifier_phase1.py")],
             "extra": {"kind": "certificate", "phase": "phase1"},
@@ -89,6 +94,47 @@ def _artifact_specs() -> List[Dict[str, object]]:
             "path": os.path.join(base, "certificate_final_audit.json"),
             "sources": common_sources,
             "extra": {"kind": "certificate", "phase": "final_audit"},
+        },
+        # Continuum-bridge evidence artifacts
+        {
+            "path": os.path.join(base, "continuum_limit_audit_result.json"),
+            "sources": common_sources + [os.path.join(base, "continuum_limit_verifier.py")],
+            "extra": {"kind": "evidence", "phase": "continuum_limit"},
+        },
+        {
+            "path": os.path.join(base, "operator_convergence_evidence.json"),
+            "sources": common_sources + [os.path.join(base, "operator_convergence_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "operator_convergence"},
+        },
+        {
+            "path": os.path.join(base, "os_audit_result.json"),
+            "sources": common_sources + [os.path.join(base, "audit_handshake_and_gap.py")],
+            "extra": {"kind": "evidence", "phase": "os_audit"},
+        },
+        {
+            "path": os.path.join(base, "os_reconstruction_evidence.json"),
+            "sources": common_sources + [os.path.join(base, "os_reconstruction_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "os_reconstruction"},
+        },
+        {
+            "path": os.path.join(base, "rp_evidence.json"),
+            "sources": common_sources + [os.path.join(base, "rp_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "reflection_positivity"},
+        },
+        {
+            "path": os.path.join(base, "schwinger_limit_evidence.json"),
+            "sources": common_sources + [os.path.join(base, "schwinger_limit_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "schwinger_limit"},
+        },
+        {
+            "path": os.path.join(base, "semigroup_evidence.json"),
+            "sources": common_sources + [os.path.join(base, "semigroup_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "semigroup"},
+        },
+        {
+            "path": os.path.join(base, "semigroup_hypotheses.json"),
+            "sources": common_sources + [os.path.join(base, "semigroup_evidence.py")],
+            "extra": {"kind": "evidence", "phase": "semigroup_hypotheses"},
         },
     ]
 

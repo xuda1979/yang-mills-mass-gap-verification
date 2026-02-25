@@ -4,7 +4,7 @@ LSI Positivity Verification (Gauge Invariant)
 
 This module verifies that the Gauge Invariant Mass Gap (related to the
 Log-Sobolev Inequality constant c(beta)) remains strictly positive
-throughout the certification domain [0.25, 6.0].
+throughout the certification domain [0.1, 6.0].
 
 This numerical result supports the Unconditional Proof:
 "The spectral gap of the Gauge Invariant Transfer Matrix (defined via
@@ -20,7 +20,7 @@ sys.path.append(os.path.dirname(__file__))
 from interval_arithmetic import Interval
 from rigorous_constants_derivation import AbInitioBounds
 
-def verify_lsi_positivity(beta_min=0.25, beta_max=6.0, steps=100):
+def verify_lsi_positivity(beta_min=0.1, beta_max=6.0, steps=100):
     print("=" * 70)
     print("LSI CONSTANT POSITIVITY VERIFICATION")
     print(f"Domain: [{beta_min}, {beta_max}]")

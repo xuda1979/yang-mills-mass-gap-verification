@@ -56,6 +56,7 @@ class DobrushinChecker:
         self.Nc = Nc
         # Single source of truth for the audited handshake point used by
         # `export_results_to_latex.py` and the LaTeX manuscript.
+        # NOTE: keep this consistent with any manuscript macros (e.g. \VerBetaStrongMax).
         self.handshake_beta = 0.25
         
     def compute_interaction_norm(self, beta_interval: Interval) -> Interval:
@@ -76,8 +77,8 @@ class DobrushinChecker:
            
         Safety Condition alpha < 1 implies beta < 1/3 (approx 0.33).
         
-        Therefore, we shift the Handshake Point to beta = 0.30 to ensure
-        rigorous overlap with the Strong Coupling Phase.
+        Therefore, we choose a conservative handshake point well below 1/3.
+        The audited default in this repository is `self.handshake_beta` (currently 0.25).
         """
         
         # 1. Inputs

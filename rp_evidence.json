@@ -7,12 +7,13 @@
         "axis": "t (time)"
     },
     "provenance": {
-        "method": "Formal Theorem Artifact",
-        "description": "Formal proof artifact referencing Osterwalder-Seiler theorem for Wilson Action.",
-        "source": "formal_proofs/reflection_positivity.tex"
+        "method": "Character expansion (Osterwalder-Seiler 1978)",
+        "proof_artifact_sha256": "c48b009e6923567f9bfd71415a251f9bebf0a480c1fbbe54c54e4bfcf24fb84b",
+        "description": "Reflection positivity proved via character expansion of Wilson plaquette action. Positivity of character expansion coefficients c_R(beta) > 0 and orthogonality of characters under Haar integration yield <(Theta A) A> >= 0.",
+        "source": "formal_proofs/rp_proof.txt"
     },
     "proof": {
         "schema": "yangmills.rp_proof_artifact.v1",
-        "sha256": "a1459c0e20ab5e6ffbf0aa100176edd646ec2823df9e02c2336e70698e0afaed"
+        "sha256": "c48b009e6923567f9bfd71415a251f9bebf0a480c1fbbe54c54e4bfcf24fb84b"
     }
 }

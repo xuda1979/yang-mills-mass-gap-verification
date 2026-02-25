@@ -10,8 +10,8 @@ def test_default_schwinger_limit_evidence_is_conditional():
     audit_schwinger_limit_evidence = _import_audit()
     res = audit_schwinger_limit_evidence()
     assert res["key"] == "schwinger_limit_evidence_present"
-    # Default artifact exists but is explicitly theorem-boundary (sha256 TBD)
-    assert res["status"] == "CONDITIONAL"
+    # With proper proof artifact bound (real SHA-256), evidence should PASS.
+    assert res["status"] == "PASS"
 
 
 def test_continuum_obligations_include_schwinger_evidence():

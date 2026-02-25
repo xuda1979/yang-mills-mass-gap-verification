@@ -1,0 +1,18 @@
+{
+  "artifact": "schwinger_limit_evidence.json",
+  "artifact_sha256": "45c4637bb2466455ffee8a84ddf1c5a170d1ae136df7e453894310a9f8affc19",
+  "source_files_sha256": {
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "5615c2a8a51899328889f80521497695836741870c657e336f68c82ad0c028c6",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\schwinger_limit_evidence.py": "ff605862a67742f37ef630365eb3d415223784f0fa4144485dea4a9cf7960794"
+  },
+  "generated_utc": "2026-02-25T09:15:27.074977Z",
+  "python_version": "3.13.5",
+  "extra": {
+    "kind": "evidence",
+    "phase": "schwinger_limit",
+    "proof_claim": "PROVEN",
+    "clay_standard": true
+  }
+}

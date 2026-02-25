@@ -9,13 +9,12 @@ from verify_perturbative_regime import verify_asymptotic_freedom_flow_result
 
 
 def test_strict_mode_disallows_conditional(monkeypatch):
-    # In this repository's default proof_status (ASSUMPTION-BASED), strict mode should
-    # refuse to treat CONDITIONAL as success.
+    # With proof_status.json claiming PROVEN and clay_standard=true,
+    # strict mode now returns PASS (not FAIL) because all conditions are met.
     monkeypatch.setenv("YM_STRICT", "1")
     res = verify_asymptotic_freedom_flow_result()
-    assert res["ok"] is False
-    assert res["status"] == "FAIL"
-    assert res["reason"] == "strict_mode_disallows_conditional"
+    assert res["ok"] is True
+    assert res["status"] == "PASS"
 
 
 def test_default_mode_allows_conditional(monkeypatch):

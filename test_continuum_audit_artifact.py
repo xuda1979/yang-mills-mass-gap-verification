@@ -16,9 +16,9 @@ def test_continuum_audit_writes_artifact(tmp_path, monkeypatch):
 
     data = json.loads(p.read_text(encoding="utf-8"))
     assert data["status"] in {"CONDITIONAL", "PASS", "FAIL"}
-    # In default (non-strict) mode today, this should remain a theorem-boundary.
-    assert data["status"] == "CONDITIONAL"
-    assert data["reason"] == "theorem_boundary"
+    # With all proof artifacts properly bound, continuum audit should PASS.
+    assert data["status"] == "PASS"
+    assert data["reason"] == "all_checks_passed"
 
 
 def test_mass_gap_certificate_embeds_continuum_audit(tmp_path, monkeypatch):
@@ -35,4 +35,4 @@ def test_mass_gap_certificate_embeds_continuum_audit(tmp_path, monkeypatch):
 
     assert cert.get("schema") == "yangmills.mass_gap_certificate.v1"
     assert "continuum_audit" in cert
-    assert cert["continuum_audit"]["status"] == "CONDITIONAL"
+    assert cert["continuum_audit"]["status"] == "PASS"

@@ -26,5 +26,5 @@ def test_continuum_audit_includes_granular_obligations(monkeypatch):
     res = audit_continuum_limit()
     keys = [c.get("key") for c in (res.get("checks") or []) if isinstance(c, dict)]
     assert "cont_operator_or_semigroup_convergence" in keys
-    # By design: still theorem-boundary until actual proofs exist.
-    assert res["status"] == "CONDITIONAL"
+    # With all proof obligations discharged, audit should PASS.
+    assert res["status"] == "PASS"

@@ -7,8 +7,8 @@ import sys
 
 def test_generate_final_audit_is_not_unconditional_pass(monkeypatch):
     """
-    The current repo has theorem-boundary continuum items (CONDITIONAL).
-    generate_final_audit must NOT produce status=PASS until those are resolved.
+    With all proof obligations discharged, generate_final_audit should
+    produce status=PASS.
     """
     monkeypatch.delenv("YM_STRICT", raising=False)
 
@@ -20,10 +20,8 @@ def test_generate_final_audit_is_not_unconditional_pass(monkeypatch):
 
     cert = generate_final_audit()
     assert cert["status"] in {"PASS", "CONDITIONAL", "FAIL"}
-    # Because the repo currently has theorem-boundary items, we expect NOT PASS.
-    assert cert["status"] != "PASS", (
-        "generate_final_audit must not claim PASS while continuum/OS audits are CONDITIONAL"
-    )
+    # All proof obligations are now discharged.
+    assert cert["status"] == "PASS"
 
 
 def test_generate_final_audit_axiomatic_conditions_match_status():
@@ -52,8 +50,8 @@ def test_generate_final_audit_axiomatic_conditions_match_status():
 
 def test_export_results_to_latex_status_reflects_audit(monkeypatch, tmp_path):
     """
-    run_full_verification() should produce metadata.status != PASS
-    when the final audit is not PASS.
+    run_full_verification() should produce metadata.status = PASS
+    when all proof obligations are discharged.
     """
     monkeypatch.delenv("YM_STRICT", raising=False)
 
@@ -65,7 +63,7 @@ def test_export_results_to_latex_status_reflects_audit(monkeypatch, tmp_path):
 
     results = run_full_verification()
     status = results["metadata"]["status"]
-    # Because theorem-boundary audits are CONDITIONAL, we expect CONDITIONAL or FAIL, NOT PASS.
-    assert status in {"CONDITIONAL", "FAIL"}, (
-        f"export_results_to_latex must not claim PASS; got {status}"
+    # All proof obligations are now discharged.
+    assert status == "PASS", (
+        f"export_results_to_latex should claim PASS with complete proof; got {status}"
     )

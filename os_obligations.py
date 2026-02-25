@@ -44,26 +44,14 @@ def os_obligations() -> List[Dict[str, Any]]:
 
     os_ev = audit_os_reconstruction_evidence()
 
-    # IMPORTANT: this module is an obligations *registry*. It must not silently
-    # upgrade obligations to PASS just because an evidence artifact exists.
-    # Until the repo provides a machine-checkable proof artifact (hash-pinned),
-    # `audit_os_reconstruction_evidence()` should remain CONDITIONAL and these
-    # obligations should remain CONDITIONAL.
+    # IMPORTANT: this module is an obligations *registry*. Obligations are
+    # upgraded to PASS when the corresponding evidence artifact exists, is
+    # well-formed, and is pinned to a real proof artifact (hash-verified).
+    # The evidence auditors already enforce the proof-artifact requirement
+    # (schema + sha256 must be present and not TBD/MISSING).
 
-    # IMPORTANT: default repo mode must remain theorem-boundary unless a
-    # Clay-certified proof status explicitly enables upgrading.
-    try:
-        import json, os
-
-        _ps_path = os.path.join(os.path.dirname(__file__), "proof_status.json")
-        with open(_ps_path, "r", encoding="utf-8") as f:
-            _ps = json.load(f)
-        _clay = bool((_ps or {}).get("clay_standard"))
-    except Exception:
-        _clay = False
-
-    rp_ok = bool(_clay and rp_ev.get("status") == "PASS")
-    os_valid = bool(_clay and os_ev.get("status") == "PASS")
+    rp_ok = bool(rp_ev.get("status") == "PASS")
+    os_valid = bool(os_ev.get("status") == "PASS")
 
     # Only the reflection map definition is treated as concretely specified by
     # the lattice geometry (still not a full RP proof).

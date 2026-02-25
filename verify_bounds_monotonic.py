@@ -87,8 +87,18 @@ def verify_inequality(func, domain_lo, domain_hi, epsilon=1e-100, max_depth=25, 
             print(f"    [ERR] Exception at {x_iv}: {e}")
             return False
 
+        # Convert bounds to float for safe comparison (ivmpf objects may not
+        # support direct comparison with Python int/float).
+        try:
+            lower = float(res.a)
+            upper = float(res.b)
+        except Exception:
+            # If conversion fails, treat as indeterminate and subdivide.
+            lower = 0.0
+            upper = 0.0
+
         # 3. Check Condition: Lower bound > 0 (or epsilon)
-        if res.a > epsilon:
+        if lower > epsilon:
             # PROVEN for this sub-interval
             dv = (hi - lo)
             verified_volume += dv
@@ -96,7 +106,7 @@ def verify_inequality(func, domain_lo, domain_hi, epsilon=1e-100, max_depth=25, 
             continue
             
         # 4. Check Counterexample: Upper bound < 0
-        if res.b < 0:
+        if upper < 0:
             print(f"    [FAIL] Counterexample found at {x_iv}. Range: {res}")
             if bar is not None:
                 bar.close()

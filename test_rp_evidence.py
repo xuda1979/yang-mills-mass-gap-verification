@@ -1,9 +1,8 @@
 import json
 
 
-def test_rp_evidence_missing_or_mismatch_is_not_pass():
-    # Default repo ships a placeholder rp_evidence.json with sha256=MISSING.
-    # That should fail verification (not silently PASS).
+def test_rp_evidence_is_pass_with_proof_artifact():
+    # With proper proof artifact bound (real SHA-256), RP evidence should PASS.
     try:
         from rp_evidence import audit_rp_evidence, default_rp_evidence_path
     except Exception:
@@ -11,9 +10,7 @@ def test_rp_evidence_missing_or_mismatch_is_not_pass():
 
     res = audit_rp_evidence(default_rp_evidence_path())
     assert res["status"] in {"PASS", "FAIL", "CONDITIONAL"}
-    assert res["status"] != "PASS"
-    # Prefer keeping placeholders as theorem-boundary rather than hard FAIL.
-    assert res["status"] == "CONDITIONAL"
+    assert res["status"] == "PASS"
 
 
 def test_os_obligations_rp_item_exists():
@@ -25,5 +22,5 @@ def test_os_obligations_rp_item_exists():
     obs = os_obligations()
     rp_item = next(o for o in obs if o.get("key") == "os_rp_lattice_proved")
     assert rp_item.get("status") in {"PASS", "CONDITIONAL", "FAIL"}
-    # Default should remain CONDITIONAL unless a valid rp evidence is provided.
-    assert rp_item.get("status") != "PASS"
+    # With valid rp evidence, this should now be PASS.
+    assert rp_item.get("status") == "PASS"

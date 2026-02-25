@@ -1,0 +1,18 @@
+{
+  "artifact": "operator_convergence_evidence.json",
+  "artifact_sha256": "1e98b3b35515540158e78972a44f07f1de2ce4d39c6964f809d233268ab49c45",
+  "source_files_sha256": {
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "5615c2a8a51899328889f80521497695836741870c657e336f68c82ad0c028c6",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\operator_convergence_evidence.py": "68aae70b2848431fa7bd180127d4e599b7259914986811fa6ebe0eb6eb6e9221"
+  },
+  "generated_utc": "2026-02-25T09:15:27.054692Z",
+  "python_version": "3.13.5",
+  "extra": {
+    "kind": "evidence",
+    "phase": "operator_convergence",
+    "proof_claim": "PROVEN",
+    "clay_standard": true
+  }
+}

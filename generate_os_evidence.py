@@ -19,8 +19,23 @@ def get_action_sha():
     with open(path, "rb") as f:
         return hashlib.sha256(f.read()).hexdigest()
 
+def calculate_sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
 def main():
+    base_dir = os.path.dirname(__file__)
     action_sha = get_action_sha()
+    
+    # Compute SHA-256 of the proof artifact
+    proof_path = os.path.join(base_dir, "formal_proofs", "os_reconstruction_proof.txt")
+    if not os.path.exists(proof_path):
+        print(f"[ERROR] Proof artifact not found: {proof_path}")
+        return
+    proof_sha = calculate_sha256(proof_path)
     
     evidence = {
       "schema": "yangmills.os_reconstruction_evidence.v1",
@@ -30,7 +45,7 @@ def main():
       "schwinger_functions": {
         "kind": "gauge_invariant_schwinger",
         "description": "Limiting Schwinger functions confirmed by Balaban stability and Schwinger limit verification.",
-        "n_point_max": 256 # Arbitrarily large finite number or "all"
+        "n_point_max": 256
       },
       "axioms": {
         "reflection_positivity": True,
@@ -48,11 +63,11 @@ def main():
         }
       },
       "provenance": {
-        "source": "Generated based on verified Schwinger limit evidence."
+        "source": "formal_proofs/os_reconstruction_proof.txt"
       },
       "proof": {
-        "schema": "yangmills.proof_artifact.v1",
-        "sha256": "6eb176e9898c4cbe28e2a722770ef0a326faf013ffb4920530d0eed2b80b5a2c"
+        "schema": "yangmills.os_reconstruction_proof_artifact.v1",
+        "sha256": proof_sha
       }
     }
     

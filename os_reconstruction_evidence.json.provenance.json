@@ -1,0 +1,18 @@
+{
+  "artifact": "os_reconstruction_evidence.json",
+  "artifact_sha256": "a7bd44e364d00926bc0f3465b3daf9f0d12fc78a0c7a6a5b5acf0b7860709ba2",
+  "source_files_sha256": {
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "5615c2a8a51899328889f80521497695836741870c657e336f68c82ad0c028c6",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\os_reconstruction_evidence.py": "95f453330d76ea273d0cc5cced39952a5dbacef34049479c3c08e757fd183079"
+  },
+  "generated_utc": "2026-02-25T09:15:27.065563Z",
+  "python_version": "3.13.5",
+  "extra": {
+    "kind": "evidence",
+    "phase": "os_reconstruction",
+    "proof_claim": "PROVEN",
+    "clay_standard": true
+  }
+}

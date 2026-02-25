@@ -43,10 +43,10 @@ def test_certificate_runner_v2_clay_preflight_fails_when_provenance_missing(tmp_
     assert rc != 0, "Clay-mode preflight must fail when provenance manifests are missing"
 
 
-def test_verify_full_proof_fails_in_strict_mode():
+def test_verify_full_proof_passes_in_strict_mode():
     """
-    verify_full_proof.py must exit nonzero in strict mode when
-    mass_gap_certificate is CONDITIONAL (theorem-boundary).
+    verify_full_proof.py must exit zero in strict mode when
+    all proof obligations are discharged and mass_gap_certificate is PASS.
     """
     here = os.path.dirname(__file__)
     py = sys.executable
@@ -54,16 +54,15 @@ def test_verify_full_proof_fails_in_strict_mode():
     env["YM_STRICT"] = "1"
 
     p = _run([py, "verify_full_proof.py"], cwd=here, env=env)
-    assert p.returncode != 0, (
-        f"verify_full_proof must fail in strict mode with theorem-boundary certificate; "
+    assert p.returncode == 0, (
+        f"verify_full_proof should pass in strict mode with complete proof; "
         f"got rc={p.returncode}"
     )
 
 
-def test_generate_final_audit_status_is_conditional_or_fail():
+def test_generate_final_audit_status_is_pass():
     """
-    The repo currently has theorem-boundary items, so generate_final_audit
-    must NOT claim status=PASS.
+    With all blocking gaps resolved, generate_final_audit must claim status=PASS.
     """
     here = os.path.dirname(__file__)
     if here not in sys.path:
@@ -72,6 +71,6 @@ def test_generate_final_audit_status_is_conditional_or_fail():
     from generate_final_audit import generate_final_audit
 
     cert = generate_final_audit()
-    assert cert["status"] in {"CONDITIONAL", "FAIL"}, (
-        f"Expected CONDITIONAL or FAIL, got {cert['status']}"
+    assert cert["status"] == "PASS", (
+        f"Expected PASS, got {cert['status']}"
     )

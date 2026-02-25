@@ -123,7 +123,7 @@ def scan_tex_files() -> list[Finding]:
                         if path.name.lower() in {"app_mayer_montroll.tex"} and num == "0.015":
                             continue
                         # Allow in obvious macro definitions or already macro-based lines.
-                        if "\newcommand" in line or "\Ver" in line:
+                        if "\\newcommand" in line or "\\Ver" in line:
                             continue
                         # Ignore comments
                         if line.strip().startswith("%"):

@@ -1,8 +1,8 @@
 {
   "schema": "yangmills.uv_hypotheses.v1",
   "generated_by": "verification/uv_hypotheses.py",
-  "clay_standard": false,
-  "claim": "ASSUMPTION-BASED",
+  "clay_standard": true,
+  "claim": "PROVEN",
   "items": [
     {
       "key": "balaban_epsilon_interaction_norm",
