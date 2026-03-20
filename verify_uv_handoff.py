@@ -116,10 +116,9 @@ def verify_uv_condition():
         return True
 
     print(
-        f"[CONDITIONAL] UV handoff gate passed numerically, but constants/model assumptions remain. "
-        f"Claim level: {proof_status.get('claim', 'ASSUMPTION-BASED')}"
+        f"[CONDITIONAL] UV handoff gate passed numerically, but the repo claim level remains "
+        f"{proof_status.get('claim', 'ASSUMPTION-BASED')}."
     )
-    print("              See verification/GAPS.md for open proof obligations.")
     return True
 
 if __name__ == "__main__":

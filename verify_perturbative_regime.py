@@ -389,7 +389,6 @@ def verify_asymptotic_freedom_flow_result() -> Dict[str, Any]:
             }
 
         print(f"[CONDITIONAL] {msg}")
-        print("              See verification/GAPS.md for open proof obligations.")
         return {
             "ok": True,
             "status": "CONDITIONAL",

@@ -1,15 +1,17 @@
 {
   "artifact": "mass_gap_certificate.json",
-  "artifact_sha256": "26bb67ba7c6c16b0caaa2428b281736df29cf663a3cb2999d5eb60e4e89ba229",
+  "artifact_sha256": "9f7df64dfe5cc63d5619a5d3ebe37cf8c3b6e8ebc5c752e51bd46b6fc631a3f8",
   "source_files_sha256": {
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\verify_gap_rigorous.py": "d02fbb9823daf2f73b12b8b10c63b23d2deb1032a8f858949d1e4e30644e141e",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rigorous_constants_derivation.py": "1e18070d1b078f935969b6bf24b49825699bafb1eaa70e42ced27e2222782150",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\verify_gap_rigorous.py": "aeea4fc9c712c7917a3f9b958b1aefd957852022b758af45dff37d9e69d8056e",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rigorous_constants_derivation.py": "0afa963bb92f0a1a0bb39b587e6abe29120bf1521cb4840d6fd11f4b1af15af8",
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\os_audit.py": "e0d0d5b26cd26b41dbd9db20e9b634a7bec7c5858223abea9b993eb0aac1e051",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\os_audit.py": "c773cfbbd00911cbb307ee719e8de2de633bf58c8b018f8e26832d67266e67ff",
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\audit_artifacts.py": "3391d9b1141291caba0ac3da09a808db2ed56fb6bca374d77c621d038caec0ab",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\provenance.py": "893a6ec7c8890c67fa86109c5a0550514379fe91b1c91c721ed7da8a4a735822"
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\provenance.py": "893a6ec7c8890c67fa86109c5a0550514379fe91b1c91c721ed7da8a4a735822",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "1402e1e6adb0f7a204141f2245ce226f2fd6284f29bcd8cd0087b51f5f8df71f"
   },
-  "generated_utc": "2026-02-25T09:19:45.865647Z",
+  "generated_utc": "2026-03-11T16:09:09.527064Z",
   "python_version": "3.13.5",
   "extra": {
     "kind": "certificate",

@@ -300,8 +300,20 @@ def run_proof_suite():
         print("")
 
     # Final conclusion must respect Clay/strict semantics.
+    claim = proof_status.get("claim", "UNKNOWN")
+
     if all_passed:
-        if clay:
+        if strict and claim != "PROVEN":
+            # Strict mode requires a fully PROVEN claim.
+            print(f"CONCLUSION: STRICT MODE FAILURE — proof_status claim is "
+                  f"'{claim}', not 'PROVEN'.")
+            blocking = proof_status.get("blocking_gaps", [])
+            if blocking:
+                print(f"  Blocking gaps ({len(blocking)}):")
+                for g in blocking:
+                    print(f"    - {g}")
+            sys.exit(1)
+        elif clay:
             print("CONCLUSION: CLAY-CERTIFIED PROOF VERIFIED.")
         else:
             # In non-clay mode, internal PASS means only that the software gates

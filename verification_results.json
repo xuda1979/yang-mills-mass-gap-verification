@@ -1,19 +1,29 @@
 {
   "metadata": {
-    "generated": "2026-02-25T17:15:27.752296",
+    "generated": "2026-03-12T00:04:53.267844",
     "version": "1.0",
     "status": "PASS"
   },
   "regimes": {
-    "strong_coupling_max": 0.25,
-    "intermediate_min": 0.25,
+    "strong_coupling_max": 0.1,
+    "intermediate_min": 0.1,
     "intermediate_max": 6.0,
     "weak_coupling_min": 6.0
   },
   "verification_points": {
+    "0.10": {
+      "beta": 0.1,
+      "regime": "strong",
+      "J_marginal_lower": 0.5,
+      "J_marginal_upper": 2.5,
+      "J_irrelevant_lower": -0.359975,
+      "J_irrelevant_upper": 0.359975,
+      "contracts": true,
+      "status": "PASS"
+    },
     "0.25": {
       "beta": 0.25,
-      "regime": "strong",
+      "regime": "crossover",
       "J_marginal_lower": 0.5,
       "J_marginal_upper": 2.5,
       "J_irrelevant_lower": -0.393365,
@@ -113,20 +123,21 @@
     }
   },
   "dobrushin_check": {
-    "beta": 0.25,
-    "norm_upper": 0.9375,
+    "beta": 0.1,
+    "norm_upper": 0.33,
     "status": "PASS"
   },
   "summary": {
     "all_passed": true,
-    "total_points": 10,
-    "passed_points": 10,
+    "total_points": 11,
+    "passed_points": 11,
     "max_J_irrelevant": 0.754673,
     "min_J_irrelevant": 0.300661,
     "contraction_margin": 0.235327
   },
   "pollution_check": {
     "beta_grid": [
+      0.1,
       0.25,
       0.4,
       0.5,
@@ -148,6 +159,7 @@
       0.009923,
       0.009923,
       0.009923,
+      0.009923,
       0.009923
     ],
     "C_poll_upper_max": 0.009923,
@@ -155,13 +167,13 @@
   },
   "lsi_check": {
     "status": "PASS",
-    "min_lsi_constant": 0.00054519
+    "min_lsi_constant": 0.00054499
   },
   "interval_check": {
-    "covered_min": 0.25,
+    "covered_min": 0.1,
     "covered_max": 6.0,
-    "ball_count": 58,
-    "max_J_irr_continuous": 0.7931,
+    "ball_count": 60,
+    "max_J_irr_continuous": 0.7955,
     "status": "PASS"
   }
 }

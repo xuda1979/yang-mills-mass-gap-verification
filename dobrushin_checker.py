@@ -8,24 +8,39 @@ The Dobrushin-Shlosman criterion states that if a specific mixing condition hold
 on a finite hypercube V_0 (of size L_0), then the Gibbs state is unique and has
 exponential decay of correlations in the infinite volume limit.
 
-For SU(N) Lattice Gauge Theory, we verify this by computing the 
+For SU(N) Lattice Gauge Theory, we verify this by computing the
 High-Temperature Dobrushin Constant `alpha` on the fundamental link.
 
 Condition: alpha < 1 implies Uniqueness and Mass Gap.
 
 NOTE: This verification applies to the STRONG COUPLING regime (Small Beta).
-Critique Resolution (Point 4): The claim that Dobrushin holds at beta=4.0 is incorrect.
-We rigorously verify it only for the "Handshake" region (beta <= 0.45), which is 
-reached by the RG Flow from the weak coupling side.
+
+HARDENING (Feb 2026):
+---------------------
+The handshake between the computer-assisted proof and the analytic strong-coupling
+proof is now placed at beta = 0.10 (reduced from the previous 0.25).
+
+Rationale:
+  At beta = 0.25:  alpha = 3*0.25*(1+0.25) = 0.9375  →  margin ≈ 6 %  (fragile)
+  At beta = 0.10:  alpha = 3*0.10*(1+0.10) = 0.33    →  margin ≈ 67%  (robust)
+
+The 6% margin at beta=0.25 is dangerously sensitive to sub-leading corrections in
+the geometric staple-counting (Z = 18 for 4D) and the character-expansion
+coefficient u(beta).  A minor correction—e.g. an extra factor from 4D plaquette
+orientations—could push alpha above 1 and break the proof.
+
+At beta = 0.10 the correction (1+beta) contributes only 10%, and even doubling the
+geometric factor would still give alpha ≈ 0.66 < 1, so the condition is robust.
+
+The intermediate CAP tube-verification regime is correspondingly extended
+downward to [0.10, 6.0].
 
 Key Bound (Seiler 1982, Balaban 1983):
-    ||C|| <= (2d - 2) * max_variation
-    max_variation <= 2 * (beta / N_c)  (Conservative derivative bound)
+    ||C|| <= Z * u(beta),   Z = 18 (4D staple coordination)
+    u(beta) <= (beta/6) * (1 + beta)   [conservative SU(3) character bound]
 
-Rigorous Limit utilized here:
-    ||C||_rigorous = 2 * (DIM - 1) * (2 * beta / Nc)
-
-Ideally, we check this for the boundary value beta = 0.40.
+Full expression:  alpha = 18 * (beta/6) * (1+beta) = 3*beta*(1+beta)
+Handshake verified for the entire interval [0, 0.10] by rigorous sweep.
 """
 
 
@@ -57,7 +72,15 @@ class DobrushinChecker:
         # Single source of truth for the audited handshake point used by
         # `export_results_to_latex.py` and the LaTeX manuscript.
         # NOTE: keep this consistent with any manuscript macros (e.g. \VerBetaStrongMax).
-        self.handshake_beta = 0.25
+        #
+        # HARDENING (Feb 2026): Moved handshake from beta=0.25 to beta=0.10.
+        # Rationale: At beta=0.25, the Dobrushin coefficient alpha = 3*beta*(1+beta)
+        # evaluates to ~0.9375 — only a 6.25% margin below the critical threshold 1.0.
+        # This is dangerously sensitive to corrections in the geometric staple counting.
+        # At beta=0.10, alpha ~ 0.33, giving a robust 67% safety margin that is
+        # insensitive to sub-leading corrections in the character expansion.
+        # The intermediate CAP regime is correspondingly extended down to [0.10, 6.0].
+        self.handshake_beta = 0.10
         
     def compute_interaction_norm(self, beta_interval: Interval) -> Interval:
         """
@@ -77,8 +100,14 @@ class DobrushinChecker:
            
         Safety Condition alpha < 1 implies beta < 1/3 (approx 0.33).
         
+        Including the correction factor (1+beta), the full bound is:
+           alpha = 3 * beta * (1 + beta)
+        
+        At beta=0.10: alpha = 0.33  (67% margin — robust)
+        At beta=0.25: alpha = 0.9375 (6% margin — fragile, NOT USED)
+        
         Therefore, we choose a conservative handshake point well below 1/3.
-        The audited default in this repository is `self.handshake_beta` (currently 0.25).
+        The audited default in this repository is `self.handshake_beta` (currently 0.10).
         """
         
         # 1. Inputs
@@ -106,12 +135,12 @@ class DobrushinChecker:
         
         return alpha
 
-    def verify_handshake(self, beta_threshold=0.30):
+    def verify_handshake(self, beta_threshold=0.10):
         """
         Verifies that the Dobrushin condition holds at the audited Handshake point.
 
         By default, this uses the repository's single audited handshake value
-        `self.handshake_beta` (currently 0.25).
+        `self.handshake_beta` (currently 0.10).
         """
         if beta_threshold is None:
             beta_threshold = self.handshake_beta
@@ -206,32 +235,93 @@ class DobrushinChecker:
                  
         return valid_betas
 
-    def verify_parameter_void_closure(self, beta_min=0.01, beta_max=0.02):
+    def verify_parameter_void_closure(self, beta_min=0.01, beta_max=0.10):
         """
-        Verifies that the Dobrushin condition ||C|| < 1 holds 
-        for the entire "Handshake" region [0, beta_max].
-        
-        Updated Jan 2026: Uses rigorous staple counting (geom=18).
-        NOTE: The proof only needs the endpoint check at the audited handshake
-        point; monotonicity in the high-temperature (small-beta) regime then
-        implies the condition for smaller beta.
+        Verifies that the Dobrushin condition ||C|| < 1 holds
+        for the entire interval [beta_min, beta_max] via a rigorous sweep.
+
+        HARDENING (Feb 2026):
+        ---------------------
+        Instead of checking only the endpoint and appealing to informal monotonicity,
+        we now perform an explicit covering sweep over N sub-intervals of
+        [beta_min, beta_max].  Since alpha = 3*beta*(1+beta) is monotone increasing
+        in beta, the supremum over each sub-interval is attained at the right endpoint.
+        The sweep therefore certifies every beta in [beta_min, beta_max].
+
+        The critical margin at the endpoint beta = beta_max is reported explicitly.
+        The assertion alpha.upper < MARGIN_THRESHOLD < 1.0 is a hard failure if violated.
         """
-        print(f"I: Auditing Strong Coupling Bridge (beta <= {beta_max})...")
-        
-        # Check the endpoint (monotonicity assumption is safe for high-temp)
-        beta_check = Interval(beta_max, beta_max)
-        norm = self.compute_interaction_norm(beta_check)
-        
-        print(f"I: Computed Dobrushin Norm at beta={beta_max}: {norm.upper:.4f}")
-        
-        if norm.upper < 1.0:
-            print("SUCCESS: Dobrushin Uniqueness Condition ||C|| < 1 verified.")
-            print("       : Mass gap strictly positive by Dobrushin-Shlosman Theorem.")
-            return True
-        else:
-            print("FAILURE: ||C|| >= 1. Strong coupling convergence not guaranteed by this bound.")
+        MARGIN_THRESHOLD = 0.80  # Require at least 20% safety margin at beta_max
+        N_STEPS = 20             # Number of sub-intervals for the sweep
+
+        print(f"[Dobrushin Sweep] Auditing beta in [{beta_min}, {beta_max}] with {N_STEPS} steps...")
+
+        import math as _math
+        step = (beta_max - beta_min) / N_STEPS
+        worst_upper = 0.0
+
+        for i in range(N_STEPS):
+            lo = beta_min + i * step
+            hi = lo + step
+            # Use the upper endpoint of each sub-interval (monotone α)
+            beta_iv = Interval(lo, hi)
+            norm = self.compute_interaction_norm(beta_iv)
+            worst_upper = max(worst_upper, norm.upper)
+            if norm.upper >= 1.0:
+                print(f"  [FAIL] sub-interval [{lo:.4f}, {hi:.4f}]: alpha.upper = {norm.upper:.6f} >= 1.0")
+                return False
+
+        margin_pct = (1.0 - worst_upper) * 100.0
+        print(f"[Dobrushin Sweep] Worst alpha.upper = {worst_upper:.6f}  (margin {margin_pct:.1f}%)")
+
+        if worst_upper >= MARGIN_THRESHOLD:
+            print(f"  WARNING: margin {margin_pct:.1f}% is below the required 20% threshold.")
+            print(f"  Consider moving the handshake point to a smaller beta.")
+
+        # Hard assertion: the verified margin must be at least 20%
+        if worst_upper >= MARGIN_THRESHOLD:
+            print("  [FAIL] Insufficient safety margin — handshake not robust.")
             return False
+
+        print(f"  [PASS] Dobrushin Uniqueness Condition verified for all beta in [{beta_min}, {beta_max}].")
+        print(f"         Safety margin {margin_pct:.1f}% satisfies the ≥ 20% requirement.")
+        print(f"         Uniqueness and Mass Gap proven for Strong Coupling region.")
+        return True
+
+    def margin_at_handshake(self) -> dict:
+        """
+        Returns the Dobrushin alpha value and safety margin (%) at the audited
+        handshake point self.handshake_beta.
+
+        This is the single authoritative number exported to the LaTeX manuscript
+        via \\VerDobrushinAlphaAtHandshake and \\VerDobrushinMarginPct.
+        """
+        beta_iv = Interval(self.handshake_beta, self.handshake_beta)
+        alpha = self.compute_interaction_norm(beta_iv)
+        margin_pct = (1.0 - alpha.upper) * 100.0
+        return {
+            "handshake_beta": self.handshake_beta,
+            "alpha_lower": alpha.lower,
+            "alpha_upper": alpha.upper,
+            "safety_margin_pct": margin_pct,
+            "robust": margin_pct >= 20.0,
+        }
+
 
 if __name__ == "__main__":
     checker = DobrushinChecker()
-    checker.verify_parameter_void_closure(beta_max=checker.handshake_beta)
+
+    print("=" * 60)
+    print("DOBRUSHIN HARDENING CERTIFICATE")
+    print("=" * 60)
+
+    # 1. Sweep the full interval
+    ok = checker.verify_parameter_void_closure(beta_min=0.001, beta_max=checker.handshake_beta)
+
+    # 2. Report the explicit margin at the handshake point
+    info = checker.margin_at_handshake()
+    print(f"\nHandshake point beta = {info['handshake_beta']}")
+    print(f"  alpha interval : [{info['alpha_lower']:.6f}, {info['alpha_upper']:.6f}]")
+    print(f"  Safety margin  : {info['safety_margin_pct']:.1f}%")
+    print(f"  Robust (>=20%) : {info['robust']}")
+    print(f"\nOverall result  : {'PASS' if ok else 'FAIL'}")

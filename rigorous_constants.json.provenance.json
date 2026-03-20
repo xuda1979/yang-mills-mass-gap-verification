@@ -4,11 +4,11 @@
   "source_files_sha256": {
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "5615c2a8a51899328889f80521497695836741870c657e336f68c82ad0c028c6",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rigorous_constants_derivation.py": "1e18070d1b078f935969b6bf24b49825699bafb1eaa70e42ced27e2222782150"
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "1402e1e6adb0f7a204141f2245ce226f2fd6284f29bcd8cd0087b51f5f8df71f",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\rigorous_constants_derivation.py": "0afa963bb92f0a1a0bb39b587e6abe29120bf1521cb4840d6fd11f4b1af15af8"
   },
-  "generated_utc": "2026-02-25T09:15:27.009248Z",
-  "python_version": "3.13.5",
+  "generated_utc": "2026-03-10T12:47:40.795510Z",
+  "python_version": "3.13.6",
   "extra": {
     "kind": "constants",
     "proof_claim": "PROVEN",

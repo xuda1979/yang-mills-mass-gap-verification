@@ -123,7 +123,7 @@ def verify_spectrum():
     print(f"\n[STEP 2] Checking positivity across {len(data)} checkpoints...")
     print("  [NOTE] Comparing JSON stored values against runtime Ab-Initio derivation.")
     
-    # 3. Transfer Matrix Gap Construction
+    # 3. Dirichlet-form gap / lattice proxy construction
     min_physical_gap = float('inf')
     gap_rows: List[Dict[str, Any]] = []
     
@@ -154,7 +154,7 @@ def verify_spectrum():
         j_irr = metrics.get('lambda_irrelevant', 0.0)
         j_irr_upper = j_irr['upper'] if isinstance(j_irr, dict) else j_irr
         
-        # Rigorous Transfer Matrix Check
+    # Rigorous Dirichlet-form / LSI positivity check
         # Condition 1: Computed gap must be strictly positive
         gap_exists = computed_lower > 1e-9
         
@@ -189,6 +189,7 @@ def verify_spectrum():
                 "lambda_irrelevant_upper": float(j_irr_upper),
                 "consistency": consistency,
                 "gap_exists": bool(gap_exists),
+                "quantity": "dirichlet_form_gap",
             }
         )
 
@@ -250,7 +251,7 @@ def verify_spectrum():
     # This is intended as the single machine-readable object that downstream
     # bundlers/LaTeX exporters can consume.
     proof_status = _load_proof_status()
-    strict = _is_strict_mode()
+    env_strict = _is_strict_mode()
     clay_certified = bool(proof_status.get("clay_standard"))
 
     # Determine overall status: PASS only if theorem-boundary audits are PASS
@@ -260,10 +261,15 @@ def verify_spectrum():
     status = "PASS" if (audits_pass and not any_mismatch) else "CONDITIONAL"
     ok = True
     reason = "all_checks_passed" if status == "PASS" else "theorem_boundary_or_mismatch"
-    if strict and status != "PASS":
+    if env_strict and status != "PASS":
         ok = False
         status = "FAIL"
         reason = "strict_mode_disallows_conditional"
+
+    # The certificate is "strict" when it meets strict-mode standards:
+    # all audits pass and no mismatches — regardless of whether the env var
+    # YM_STRICT was set during generation.
+    strict = (status == "PASS") and ok
 
     cert: Dict[str, Any] = {
         "schema": "yangmills.mass_gap_certificate.v1",
@@ -275,9 +281,14 @@ def verify_spectrum():
         "status": status,
         "reason": reason,
         "mass_gap": {
-            "kind": "dimensionless",
+            "kind": "dimensionless_lattice_proxy",
             "lower_bound": float(min_physical_gap),
             "derived_from": "lsi_constant_lower_bound",
+            "theorem_boundary": (
+                "This lower bound comes from the verified Dirichlet-form / LSI side. "
+                "A continuum Hamiltonian mass gap still depends on the separate "
+                "OS and continuum transfer audits."
+            ),
         },
         "inputs": {
             "rigorous_constants": {
@@ -320,6 +331,8 @@ def verify_spectrum():
                     os.path.join(os.path.dirname(__file__), "os_audit.py"),
                     os.path.join(os.path.dirname(__file__), "audit_artifacts.py"),
                     os.path.join(os.path.dirname(__file__), "provenance.py"),
+                    os.path.join(os.path.dirname(__file__), "uv_hypotheses.py"),
+                    os.path.join(os.path.dirname(__file__), "export_results_to_latex.py"),
                 ],
                 extra_metadata={
                     "kind": "certificate",

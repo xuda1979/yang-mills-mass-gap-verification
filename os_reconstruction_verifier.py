@@ -77,6 +77,7 @@ class GNSReconstruction:
     hamiltonian: str
     vacuum: str
     spectral_gap: float
+    theorem_boundary: bool
     ok: bool
 
 
@@ -296,6 +297,13 @@ def verify_os2_reflection_positivity() -> AxiomVerification:
     RP passes to the continuum limit because:
     - Weak limits of positive-definite sequences remain positive-definite
       (by Prokhorov's theorem applied to the reproducing kernel).
+    
+    GAUGE-ORBIT NOTE:
+    RP is verified for gauge-invariant observables on the orbit space A/G.
+    The transfer matrix acts on L²(A/G), where G is the lattice gauge group
+    at fixed time. The positivity of the transfer matrix kernel on gauge-
+    invariant states follows from the Wilson action having non-negative
+    character expansion coefficients (Creutz formula).
     """
     import contextlib
     import io
@@ -397,7 +405,9 @@ def verify_os4_clustering() -> AxiomVerification:
 
     and analogously for higher-point functions via the tree-decay bound.
 
-    Clustering implies vacuum uniqueness (Ruelle's theorem).
+    Clustering implies vacuum uniqueness (Ruelle's theorem), but in this
+    repository the continuum clustering rate is only as rigorous as the
+    continuum mass-gap input supplied by the semigroup evidence.
     """
     # Load the mass gap from semigroup evidence (constructively derived)
     semigroup_ev = _load_json("semigroup_evidence.json")
@@ -415,6 +425,37 @@ def verify_os4_clustering() -> AxiomVerification:
         return AxiomVerification(
             "OS4 (Clustering)", False,
             f"Mass gap m_approx={m_approx} <= 0, no clustering."
+        )
+
+    # Verify this is the TRANSFER MATRIX gap (not raw LSI/Dirichlet gap)
+    # The semigroup_evidence should contain notes indicating the conversion
+    notes = semigroup_ev.get("notes", [])
+    uses_tm_gap = any("transfer matrix" in str(n).lower() or "dobrushin" in str(n).lower()
+                      for n in notes)
+    theorem_boundary = any("proxy" in str(n).lower() or "theorem-boundary" in str(n).lower()
+                           for n in notes)
+
+    # Override: if the constructive bridge discharge succeeds, clear theorem_boundary
+    if theorem_boundary:
+        try:
+            try:
+                from ym_bridge_discharge import discharge_bridge
+            except ImportError:
+                from .ym_bridge_discharge import discharge_bridge
+            dr = discharge_bridge()
+            if dr.ok and not dr.theorem_boundary:
+                theorem_boundary = False
+        except Exception:
+            pass
+    
+    # Also check: if there's a raw LSI value, verify m_approx < m_lsi
+    # (the TM gap should always be smaller than the Dirichlet gap)
+    m_lsi_raw = float(semigroup_ev.get("m_lsi_dirichlet", 0))
+    if m_lsi_raw > 0 and m_approx >= m_lsi_raw:
+        return AxiomVerification(
+            "OS4 (Clustering)", False,
+            f"m_approx={m_approx} >= m_lsi_dirichlet={m_lsi_raw}. "
+            f"Transfer matrix gap should be smaller than Dirichlet gap."
         )
 
     # Compute the continuum gap via the gap transfer lemma
@@ -437,10 +478,16 @@ def verify_os4_clustering() -> AxiomVerification:
     # Exponential clustering rate
     # |⟨A(x)B(0)⟩_c| ≤ ||A|| ||B|| exp(-m|x|)
     return AxiomVerification(
-        "OS4 (Clustering)", True,
-        f"Mass gap m >= {m_continuum:.6e} implies exponential clustering: "
-        f"|S_2^c(x,0)| <= C exp(-{m_continuum:.6e} |x|). "
-        f"Vacuum uniqueness follows by Ruelle's theorem."
+        "OS4 (Clustering)", not theorem_boundary,
+        (
+            f"Mass gap m >= {m_continuum:.6e} implies exponential clustering: "
+            f"|S_2^c(x,0)| <= C exp(-{m_continuum:.6e} |x|). "
+            f"Vacuum uniqueness follows by Ruelle's theorem."
+            if not theorem_boundary else
+            f"Continuum clustering remains theorem-boundary: current semigroup evidence yields "
+            f"a gap proxy m >= {m_continuum:.6e}, but the Yang-Mills-specific transfer to a proved "
+            f"continuum Hamiltonian gap is still open."
+        )
     )
 
 
@@ -469,8 +516,9 @@ def perform_gns_reconstruction(
         T(t) = exp(-tH)  is the contraction semigroup
         H is the infinitesimal generator of T(t)
 
-    The spectral gap Δ = inf σ(H) ∩ (0,∞) > 0 follows from the
-    constructively verified lattice gap + semigroup convergence.
+    The spectral gap Δ = inf σ(H) ∩ (0,∞) > 0 is supplied in the discharged
+    bridge setting by the Yang-Mills-specific semigroup / transfer-gap bridge.
+    Fallback theorem-boundary handling remains only for legacy or partial runs.
     """
     all_ok = all(a.ok for a in axiom_results)
 
@@ -481,6 +529,7 @@ def perform_gns_reconstruction(
             hamiltonian="FAILED",
             vacuum="FAILED",
             spectral_gap=0.0,
+            theorem_boundary=True,
             ok=False,
         )
 
@@ -490,12 +539,32 @@ def perform_gns_reconstruction(
     delta = float((semigroup_ev or {}).get("delta", 1))
     t0 = float((semigroup_ev or {}).get("t0", 1))
 
-    # Compute continuum gap
+    # Compute continuum gap proxy
     q = delta + math.exp(-m_approx * t0)
     if q < 1.0:
         m_continuum = min(-math.log(q) / t0, m_approx)
     else:
         m_continuum = 0.0
+
+    theorem_boundary = any(
+        "proxy" in str(n).lower() or "theorem-boundary" in str(n).lower()
+        for n in ((semigroup_ev or {}).get("notes", []))
+    )
+
+    # Override: if the constructive bridge discharge (ym_bridge_discharge.py)
+    # reports success, the identification theorem is proved and
+    # theorem_boundary should be False regardless of semigroup note wording.
+    if theorem_boundary:
+        try:
+            try:
+                from ym_bridge_discharge import discharge_bridge
+            except ImportError:
+                from .ym_bridge_discharge import discharge_bridge
+            dr = discharge_bridge()
+            if dr.ok and not dr.theorem_boundary:
+                theorem_boundary = False
+        except Exception:
+            pass  # discharge module not available; keep theorem_boundary as-is
 
     return GNSReconstruction(
         hilbert_space=(
@@ -509,16 +578,28 @@ def perform_gns_reconstruction(
             f"Self-adjoint generator H >= 0 of the contraction semigroup "
             f"T(t) = exp(-tH). H is non-negative by RP (OS2). "
             f"H Omega = 0 (vacuum is ground state). "
-            f"Spectral gap Delta = inf sigma(H) ∩ (0,inf) >= {m_continuum:.6e} "
-            f"verified constructively via semigroup convergence lemma."
+            + (
+                f"Spectral gap Delta = inf sigma(H) ∩ (0,inf) >= {m_continuum:.6e} "
+                f"verified constructively via semigroup convergence lemma."
+                if not theorem_boundary else
+                f"A semigroup-gap proxy Delta >= {m_continuum:.6e} is available, but the "
+                f"Yang-Mills-specific identification of this proxy with a proved continuum "
+                f"Hamiltonian spectral gap remains theorem-boundary."
+            )
         ),
         vacuum=(
             "Unique cyclic vector Omega in H with H Omega = 0. "
-            "Uniqueness guaranteed by exponential clustering (OS4) via "
-            "Ruelle's theorem: mass gap => unique vacuum."
+            + (
+                "Uniqueness guaranteed by exponential clustering (OS4) via "
+                "Ruelle's theorem: mass gap => unique vacuum."
+                if not theorem_boundary else
+                "Vacuum uniqueness is not upgraded to PASS here because the needed continuum "
+                "clustering input is still theorem-boundary in fallback mode."
+            )
         ),
         spectral_gap=m_continuum,
-        ok=(m_continuum > 0.0),
+        theorem_boundary=theorem_boundary,
+        ok=(m_continuum > 0.0 and not theorem_boundary),
     )
 
 
@@ -552,7 +633,7 @@ def run_os_reconstruction() -> OSReconstructionResult:
 
     if not result.reconstruction.ok:
         result.ok = False
-        result.reason = "GNS reconstruction failed (spectral gap not positive)."
+        result.reason = "GNS reconstruction remained theorem-boundary or the spectral gap was not positive."
         return result
 
     result.ok = True
@@ -634,11 +715,11 @@ def audit_os_reconstruction() -> Dict[str, Any]:
     return {
         "key": "os_reconstruction_constructive",
         "title": "Constructive OS reconstruction verification",
-        "status": "PASS" if result.ok else "FAIL",
+        "status": "CONDITIONAL" if (result.reconstruction and result.reconstruction.theorem_boundary) else ("PASS" if result.ok else "FAIL"),
         "detail": (
-            f"All 5 OS axioms verified, GNS reconstruction yields gap >= {gap:.6e}"
-            if result.ok
-            else f"Failed: {result.reason}"
+            f"OS inputs verified, but continuum spectral-gap reconstruction remains theorem-boundary with proxy >= {gap:.6e}"
+            if (result.reconstruction and result.reconstruction.theorem_boundary)
+            else (f"All 5 OS axioms verified, GNS reconstruction yields gap >= {gap:.6e}" if result.ok else f"Failed: {result.reason}")
         ),
         "axioms": {ax.name: ax.ok for ax in result.axioms},
         "spectral_gap": gap,
@@ -676,7 +757,7 @@ def main() -> int:
             print(f"  Vacuum: Unique cyclic vector Omega, H Omega = 0")
             print(f"  Spectral gap: Delta >= {recon.spectral_gap:.6e}")
         else:
-            print("  [FAIL] Reconstruction failed.")
+            print("  [CONDITIONAL/FAIL] Reconstruction remained theorem-boundary in fallback mode or failed.")
 
     if not result.ok:
         print(f"\n[FAIL] {result.reason}")
@@ -715,8 +796,10 @@ def main() -> int:
         print(f"  [WARN] Provenance binding failed: {e}")
 
     print(f"\n{'='*70}")
-    print("CONCLUSION: OS RECONSTRUCTION CONSTRUCTIVELY VERIFIED")
+    print("CONCLUSION: OS RECONSTRUCTION CHECKS COMPLETED")
     print(f"  Spectral gap Delta >= {result.reconstruction.spectral_gap:.6e}")
+    if result.reconstruction.theorem_boundary:
+        print("  Status: CONDITIONAL — continuum Hamiltonian gap identification remains open.")
     print(f"{'='*70}")
     return 0
 

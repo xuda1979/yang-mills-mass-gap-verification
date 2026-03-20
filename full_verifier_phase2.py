@@ -41,8 +41,12 @@ def main():
 
     # 2. Initialize Tube and Covering
     print("\n[Tube Geometry]")
-    # EXTENDED RANGE: beta_min set to 0.25 to handshake with Analytic Strong Coupling Phase 1.
-    tube = TubeDefinition(beta_min=0.25, beta_max=6.0, dim=basis.count())
+    # EXTENDED RANGE (Feb 2026): beta_min moved from 0.25 down to 0.10.
+    # Rationale: The Dobrushin handshake has been hardened to beta=0.10 (67% margin
+    # vs the old 6% margin at beta=0.25).  The CAP tube must cover [0.10, 6.0] to
+    # close the parameter void between the analytic strong-coupling regime and the
+    # perturbative weak-coupling tail.
+    tube = TubeDefinition(beta_min=0.10, beta_max=6.0, dim=basis.count())
     print(f"  Tube defined for beta in [{tube.beta_min}, {tube.beta_max}]")
 
     # 3. Generate Mesh
@@ -73,7 +77,7 @@ def main():
         print("CRITICAL ERROR: Adaptive covering generation failed.")
         sys.exit(1)
         
-    print(f"  Verifying {len(covering_balls)} intervals covering [0.25, 6.0]...")
+    print(f"  Verifying {len(covering_balls)} intervals covering [0.10, 6.0]...")
 
     for ball in covering_balls:
         beta_center = ball.beta

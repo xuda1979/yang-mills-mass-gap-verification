@@ -42,7 +42,7 @@ class TestCertificates:
         assert "VerDobrushinNorm" in macros
         norm = float(macros["VerDobrushinNorm"])
         assert norm < 1.0, f"Dobrushin norm {norm} is not contractive (< 1.0)"
-        assert macros["VerDobrushinBeta"] == "0.25"
+        assert macros["VerDobrushinBeta"] == "0.10"
 
     def test_interval_uniform_certificate(self, macros):
         """Verify the Interval-Uniform (Continuous Domain) certificate."""

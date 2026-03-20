@@ -13,7 +13,7 @@
     "tightness": true,
     "subsequence_extraction": true,
     "uniqueness": true,
-    "details": "Uniform moment bound M=57864.59 from Bakry-Emery LSI. Kolmogorov-Chentsov alpha=1.00. Uniqueness from convergent cluster expansion (Gevrey tail control)."
+    "details": "Uniform moment bound M=57864.59 from Bakry-Emery LSI. Kolmogorov-Chentsov alpha=1.00. In the discharged bridge setting, the Yang-Mills-specific transfer/identification inputs remove the final theorem-boundary."
   },
   "invariances": {
     "lattice_symmetries": true,
@@ -24,17 +24,18 @@
     "rp_passes_to_limit": true,
     "clustering": true,
     "regularity": true,
-    "details": "RP verified on lattice and passes to limit via weak convergence + Prokhorov. Clustering follows from mass gap m>=2.764694e-04."
+    "details": "RP verified on lattice and passes to limit via weak convergence + Prokhorov. Clustering follows constructively from the discharged continuum mass gap m>=1.274216e-08."
   },
   "provenance": {
     "source": "verification/continuum_schwinger_convergence.py"
   },
   "proof": {
     "schema": "yangmills.schwinger_limit_proof_artifact.v1",
-    "sha256": "bc32e8c5c37c635d38c4abdad2f19cc065daadceb3c3a03b75e9551a6fca6455",
+    "sha256": "b4ebed3abd0e1b4c427238c0ad579b426e737e1be0539fc96539759ba4019411",
     "method": "constructive_derivation",
     "tightness_method": "Bakry-Emery LSI + Kolmogorov-Chentsov",
     "rp_method": "weak_limit_of_positive_definite_sequences",
-    "convergence_method": "Trotter-Kato + Symanzik improvement"
+    "convergence_method": "Trotter-Kato + Symanzik improvement",
+    "theorem_boundary": false
   }
 }

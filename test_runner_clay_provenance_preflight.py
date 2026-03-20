@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from datetime import datetime, timezone
 
 
 def _write_manifest(
@@ -159,3 +160,32 @@ def test_runner_preflight_fails_when_required_sources_missing(monkeypatch, tmp_p
     proof_status = {"clay_standard": True, "claim": "CLAY-CERTIFIED"}
     rc = certificate_runner_v2._clay_provenance_preflight(proof_status)
     assert rc != 0
+
+
+def test_generate_bundle_copies_proof_state_artifacts(monkeypatch, tmp_path):
+    here = os.path.dirname(__file__)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+
+    import certificate_runner_v2
+
+    (tmp_path / "proof_state.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "proof_state.json.provenance.json").write_text("{}", encoding="utf-8")
+
+    monkeypatch.setattr(certificate_runner_v2.os.path, "dirname", lambda _: str(tmp_path))
+    monkeypatch.setattr(certificate_runner_v2, "_collect_environment", lambda: {"utc_generated": "1970-01-01T00:00:00Z"})
+    monkeypatch.setattr(
+        certificate_runner_v2,
+        "datetime",
+        type(
+            "FixedDateTime",
+            (),
+            {"now": staticmethod(lambda tz=None: datetime(1970, 1, 1, tzinfo=timezone.utc))},
+        ),
+    )
+
+    certificate_runner_v2._generate_bundle({"claim": "ASSUMPTION-BASED", "clay_standard": False})
+
+    artifact_dir = tmp_path / "artifacts" / "19700101_000000"
+    assert (artifact_dir / "proof_state.json").is_file()
+    assert (artifact_dir / "proof_state.json.provenance.json").is_file()

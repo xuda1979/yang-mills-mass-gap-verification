@@ -56,10 +56,10 @@ class LSIUniformityVerifier:
         || Jacobian_{Irrelevant} || * (Geometric Multiplicity of Boundary) < 1.
         """
         # 1. Hybrid Check: Strong Coupling vs Weak Coupling
-        # Updated Jan 2026: Dobrushin Handshake is now at beta=0.24.
-        # For beta <= 0.24, we use Dobrushin.
-        # For beta > 0.24, we MUST use the RG Map Contraction (Jacobian).
-        if beta_interval.upper <= 0.24:
+        # Updated Feb 2026: Dobrushin Handshake is now hardened to beta=0.10.
+        # At beta=0.10 the Dobrushin alpha = 3*0.10*(1+0.10) = 0.33, giving a
+        # 67% safety margin vs the old 6% margin at beta=0.25.
+        if beta_interval.upper <= 0.10:
              # In the Strong Coupling Regime, the "Influence Matrix" is exactly the 
              # Dobrushin Interaction Matrix.
              # We use the specialized DobrushinChecker.
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     # Test Verification
     print("Testing LSI Uniformity Verifier...")
     
-    # Test at Handshake Point (Beta=0.45 in CAP regime)
+    # Test at Handshake Point (Beta=0.45 in CAP regime, now safely above hardened threshold)
     # This must now pass via the Jacobian contraction, not Dobrushin.
     print("\n--- Test 1: CAP Regime (Beta=0.45) ---")
     test_beta = Interval(0.44, 0.45)

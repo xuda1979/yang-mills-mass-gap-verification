@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 
 
 def test_record_provenance_manifests_creates_manifests(monkeypatch, tmp_path):
@@ -43,3 +44,32 @@ def test_record_provenance_manifests_ok_when_missing(monkeypatch, tmp_path):
     rc = record_provenance_manifests.main()
     assert rc == 0
     assert (tmp_path / "uv_hypotheses.json.provenance.json").is_file()
+
+
+def test_record_provenance_manifests_includes_proof_state(monkeypatch, tmp_path):
+    """Proof-state snapshots should also receive provenance manifests when present."""
+
+    here = os.path.dirname(__file__)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+
+    import record_provenance_manifests
+
+    (tmp_path / "proof_state.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "generate_proof_state.py").write_text("# stub", encoding="utf-8")
+    (tmp_path / "ym_continuum_gap_bridge.py").write_text("# stub", encoding="utf-8")
+    (tmp_path / "ym_hamiltonian_identification_evidence.py").write_text("# stub", encoding="utf-8")
+
+    monkeypatch.setattr(record_provenance_manifests.os.path, "dirname", lambda _: str(tmp_path))
+
+    rc = record_provenance_manifests.main()
+    assert rc == 0
+
+    manifest_path = tmp_path / "proof_state.json.provenance.json"
+    assert manifest_path.is_file()
+
+    with open(manifest_path, "r", encoding="utf-8") as f:
+        manifest = json.load(f)
+
+    assert manifest.get("extra", {}).get("phase") == "proof_state"
+    assert manifest.get("extra", {}).get("kind") == "evidence"

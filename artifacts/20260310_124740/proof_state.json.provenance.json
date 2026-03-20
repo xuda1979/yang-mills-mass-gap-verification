@@ -1,0 +1,18 @@
+{
+  "artifact": "proof_state.json",
+  "artifact_sha256": "88cb3cd176d5600c2bf12099ea90f6b607877e3d2bf42b62c8fc0f08f4d40e6e",
+  "source_files_sha256": {
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\generate_proof_state.py": "e114f8feeeb5af36e629fc2f7f75f8e753f6e4fb5c81862e1321f0ac38519f9c",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\ym_continuum_gap_bridge.py": "d17463cf1846de4c35d4118b365b9effc39a016b3db4e22c328ca4055967f531",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\ym_hamiltonian_identification_evidence.py": "14ec0fca86af55100304f3ebe2001247076718ff72af2b9d442637dc955581ac"
+  },
+  "generated_utc": "2026-03-10T12:47:40.918868Z",
+  "python_version": "3.13.6",
+  "extra": {
+    "kind": "evidence",
+    "phase": "proof_state",
+    "generator": "generate_proof_state.py",
+    "proof_claim": "PROVEN",
+    "clay_standard": true
+  }
+}

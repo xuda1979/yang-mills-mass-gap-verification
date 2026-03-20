@@ -227,8 +227,11 @@ class AbInitioBounds:
         CRITIQUE FIX #1: Inconsistent Scaling of Dobrushin Coefficient (Revisited)
         --------------------------------------------------------------------------
         Critique 3: "Dobrushin Gap". Standard bounds fail below beta=2.2.
-        We asserted a handshake at beta=0.25 (Strong Coupling).
-        
+        Previous code asserted a handshake at beta=0.25 (Strong Coupling), which
+        gave only a 6% safety margin (alpha=0.9375).
+
+        HARDENING (Feb 2026): Handshake moved to beta=0.10 (67% margin, alpha=0.33).
+
         To close the parameter void rigorously without assuming "Refined Bounds" that fail audit:
         We rely on the *Cluster Expansion Convergence Radius* directly, which is known
         to be finite and non-zero (approx beta < 0.35 for SU(3)).
@@ -256,10 +259,6 @@ class AbInitioBounds:
         # 4D: 6 * phi.
         # But User claims Geometry = 18. This likely includes next-nearest neighbors or plaquette-plaquette.
         coord_number = SU3_Constants.COORDINATION_NUMBER
-        
-        # FACT: At beta=0.25, u approx 0.04.
-        # 18 * 0.04 = 0.72 < 1.0. 
-        # The Gap is closed if we stick to the < 0.30 regime.
         
         # Rigorous bound on single-link dependency phi(beta)
         # at Strong Coupling: phi ~ u(beta)
@@ -931,10 +930,11 @@ if __name__ == "__main__":
     print("\nGenerating Certificate 'rigorous_constants.json'...")
     constants_map = {}
     
-    # Range of betas: 0.4 to 6.0 in steps
-    # We include 0.40 explicitly as this is the official handshake point
-    # between the Strong Coupling (Cluster Expansion) and Intermediate (CAP) regimes.
-    target_betas = [0.40, 0.50, 0.60, 0.63, 0.70, 0.80, 0.90, 1.0, 1.2, 1.5, 2.0, 2.4, 3.0, 4.0, 5.0, 6.0]
+    # Range of betas: 0.1 to 6.0 in steps
+    # 0.10 is the hardened Dobrushin handshake point (Feb 2026).
+    # The intermediate CAP regime [0.10, 6.0] starts here.
+    # We include 0.40 for backward compatibility with older citations.
+    target_betas = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.63, 0.70, 0.80, 0.90, 1.0, 1.2, 1.5, 2.0, 2.4, 3.0, 4.0, 5.0, 6.0]
     
     for b_val in target_betas:
         beta = Interval(b_val, b_val + 0.0001) # Small interval for float safety

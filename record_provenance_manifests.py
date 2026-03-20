@@ -136,6 +136,15 @@ def _artifact_specs() -> List[Dict[str, object]]:
             "sources": common_sources + [os.path.join(base, "semigroup_evidence.py")],
             "extra": {"kind": "evidence", "phase": "semigroup_hypotheses"},
         },
+        {
+            "path": os.path.join(base, "proof_state.json"),
+            "sources": [
+                os.path.join(base, "generate_proof_state.py"),
+                os.path.join(base, "ym_continuum_gap_bridge.py"),
+                os.path.join(base, "ym_hamiltonian_identification_evidence.py"),
+            ],
+            "extra": {"kind": "evidence", "phase": "proof_state", "generator": "generate_proof_state.py"},
+        },
     ]
 
 

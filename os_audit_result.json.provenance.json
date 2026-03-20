@@ -1,14 +1,14 @@
 {
   "artifact": "os_audit_result.json",
-  "artifact_sha256": "21e44857a35d90748efd1206dac729e24da5746185de8aed5d7477a032b77395",
+  "artifact_sha256": "2f9d9e8f0157c50ace377b3199cb7a2085c68fa7ffd5a31a445bf16f6e3a1b8d",
   "source_files_sha256": {
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\interval_arithmetic.py": "fe1838df6f9d3352581c7033349125b4507c7cd6f66f08ca4d04f0ea607beb7a",
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\uv_hypotheses.py": "b2829a242ec275b124e6c39d07573e0ac34b98c5bdf421da4bcab67bd0d3a46b",
-    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "5615c2a8a51899328889f80521497695836741870c657e336f68c82ad0c028c6",
+    "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\export_results_to_latex.py": "1402e1e6adb0f7a204141f2245ce226f2fd6284f29bcd8cd0087b51f5f8df71f",
     "C:\\Users\\Lenovo\\papers\\yang\\yang_mills\\verification\\audit_handshake_and_gap.py": "eb106c0f07cdf2d897683980bf9a8e272c16a1eb0e62681c8e3e659e6e0c0578"
   },
-  "generated_utc": "2026-02-25T09:15:27.060155Z",
-  "python_version": "3.13.5",
+  "generated_utc": "2026-03-10T12:47:40.873892Z",
+  "python_version": "3.13.6",
   "extra": {
     "kind": "evidence",
     "phase": "os_audit",

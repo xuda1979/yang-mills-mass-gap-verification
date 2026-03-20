@@ -6,17 +6,17 @@ def _minimal_results():
     return {
         "metadata": {"generated": "TEST", "version": "1.0", "status": "PASS"},
         "regimes": {
-            "strong_coupling_max": 0.25,
-            "intermediate_min": 0.25,
+            "strong_coupling_max": 0.1,
+            "intermediate_min": 0.1,
             "intermediate_max": 6.0,
             "weak_coupling_min": 6.0,
         },
         "verification_points": {},
-        "dobrushin_check": {"beta": 0.25, "norm_upper": 0.0, "status": "PASS"},
+        "dobrushin_check": {"beta": 0.1, "norm_upper": 0.0, "status": "PASS"},
         "pollution_check": {"C_poll_upper_max": 0.0},
         "lsi_check": {"status": "PASS", "min_lsi_constant": 1e-6},
         "interval_check": {
-            "covered_min": 0.25,
+            "covered_min": 0.1,
             "covered_max": 6.0,
             "ball_count": 0,
             "max_J_irr_continuous": 0.0,
@@ -33,6 +33,8 @@ def _minimal_results():
 
 
 def test_export_includes_mass_gap_certificate_macros(tmp_path):
+    import sys
+    sys.path.insert(0, os.path.dirname(__file__))
     # Import here so test discovery works even if some optional deps are missing.
     from export_results_to_latex import export_to_latex
 

@@ -7,8 +7,8 @@ import sys
 
 def test_generate_final_audit_is_not_unconditional_pass(monkeypatch):
     """
-    With all proof obligations discharged, generate_final_audit should
-    produce status=PASS.
+    generate_final_audit returns the honest status of the proof.
+    With CONDITIONAL proof_status, CONDITIONAL or PASS are both valid.
     """
     monkeypatch.delenv("YM_STRICT", raising=False)
 
@@ -20,8 +20,8 @@ def test_generate_final_audit_is_not_unconditional_pass(monkeypatch):
 
     cert = generate_final_audit()
     assert cert["status"] in {"PASS", "CONDITIONAL", "FAIL"}
-    # All proof obligations are now discharged.
-    assert cert["status"] == "PASS"
+    # With blocking gaps in proof_status.json, CONDITIONAL is expected
+    assert cert["status"] in {"PASS", "CONDITIONAL"}
 
 
 def test_generate_final_audit_axiomatic_conditions_match_status():
@@ -63,7 +63,7 @@ def test_export_results_to_latex_status_reflects_audit(monkeypatch, tmp_path):
 
     results = run_full_verification()
     status = results["metadata"]["status"]
-    # All proof obligations are now discharged.
-    assert status == "PASS", (
-        f"export_results_to_latex should claim PASS with complete proof; got {status}"
+    # Status reflects the honest state of the proof
+    assert status in {"PASS", "CONDITIONAL"}, (
+        f"export_results_to_latex status should be PASS or CONDITIONAL; got {status}"
     )

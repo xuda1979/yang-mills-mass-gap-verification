@@ -86,6 +86,11 @@ def audit_continuum_limit() -> Dict[str, Any]:
     except ImportError:
         from .schwinger_limit_evidence import audit_schwinger_limit_evidence
 
+    try:
+        from ym_continuum_gap_bridge import audit_ym_continuum_gap_bridge
+    except ImportError:
+        from .ym_continuum_gap_bridge import audit_ym_continuum_gap_bridge
+
     checks: List[Dict[str, Any]] = list(continuum_hypotheses())
     checks.extend(list(continuum_obligations()))
     checks.extend(list(semigroup_hypotheses_checks()))
@@ -93,6 +98,7 @@ def audit_continuum_limit() -> Dict[str, Any]:
     checks.append(dict(audit_semigroup_evidence()))
     checks.append(dict(audit_operator_convergence_evidence()))
     checks.append(dict(audit_schwinger_limit_evidence()))
+    checks.append(dict(audit_ym_continuum_gap_bridge()))
 
     statuses = [c["status"] for c in checks]
 
